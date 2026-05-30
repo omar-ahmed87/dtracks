@@ -1,4 +1,6 @@
-// Railway provides environment variables directly - no need for dotenv
+// Load environment variables from .env file (for local development)
+require('dotenv').config();
+
 const { createClient } = require('@supabase/supabase-js');
 
 const SUPABASE_URL = process.env.SUPABASE_URL;

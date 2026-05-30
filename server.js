@@ -1,4 +1,6 @@
-// Railway provides environment variables directly - no need for dotenv
+// Load environment variables from .env file (for local development)
+require('dotenv').config();
+
 const express = require("express");
 const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
