@@ -170,6 +170,12 @@ app.use(backupMiddleware);
 
 // Routes
 app.use("/", viewsRouter);
+
+// Health check endpoint for Railway
+app.get("/health", (req, res) => {
+  res.status(200).json({ status: "ok", timestamp: new Date().toISOString() });
+});
+
 app.get("/api/csrf-token", (req, res) => {
   res.json({ csrfToken: req.csrfToken() });
 });
