@@ -1,0 +1,96 @@
+<header class="header scrolled">
+  <div class="nav-container">
+    <a href="/" class="logo" style="text-decoration: none; position: relative">
+      <span class="brand-logo-text">DTracks</span>
+      <span class="brand-slogan">CORE FIRST.. THEN YOUR TRACK</span>
+    </a>
+
+    <div class="nav-menu">
+      <button class="btn-icon close-menu-btn hide-desktop" aria-label="Close Menu"
+        style="position: absolute; top: 15px; right: 15px">
+        <span class="material-symbols-rounded">close</span>
+      </button>
+
+      <div class="mobile-mockup-toggles hide-desktop" id="theme-switch-wrapper"
+        style="display: flex; gap: 15px; justify-content: center; margin-top: 40px; margin-bottom: 20px;">
+        <button class="pro-toggle-btn mockup-btn active" id="theme-light-btn">
+          <span class="material-symbols-rounded">light_mode</span>
+        </button>
+        <button class="pro-toggle-btn mockup-btn" id="theme-dark-btn">
+          <span class="material-symbols-rounded">dark_mode</span>
+        </button>
+      </div>
+
+      <div class="mobile-mockup-toggles hide-desktop" id="lang-switch-wrapper"
+        style="display: flex; gap: 15px; justify-content: center; margin-bottom: 30px;">
+        <button class="pro-toggle-btn mockup-btn" id="lang-ar-btn"
+          style="letter-spacing: 1px; font-size: 15px">AR</button>
+        <button class="pro-toggle-btn mockup-btn active" id="lang-en-btn">
+          <span class="material-symbols-rounded">language</span> EN
+        </button>
+      </div>
+
+      <nav class="nav-links mobile-centric-links">
+        <a href="/" data-i18n="nav_home">Home</a>
+
+        <a href="/#courses" data-i18n="nav_courses">Courses</a>
+
+         <a href="/about" data-i18n="nav_about">About Us</a>
+      </nav>
+
+        <div class="mobile-nav-actions hide-desktop" style="display: flex; flex-direction: column; gap: 12px; width: 100%; max-width: 300px; margin: 0 auto; padding-bottom: 40px;">
+          <% if (!isLoggedIn) { %>
+            <a href="/login" class="btn btn-primary mockup-action-btn btn-login-only" data-i18n="btn_login">Login</a>
+            <a href="/signup" class="btn btn-outline mockup-action-btn btn-login-only" data-i18n="btn_signup" style="background: transparent">Sign Up</a>
+          <% } else { %>
+            <% if (typeof userRole !== 'undefined' && userRole === 'admin') { %>
+              <a href="/admin" class="btn btn-outline mockup-action-btn btn-auth-only btn-admin-only hide-desktop" style="background: rgba(99, 102, 241, 0.1); border-color: var(--admin-primary); color: var(--admin-primary);">
+                <span class="material-symbols-rounded" style="font-size: 18px;">dashboard</span> Dashboard
+              </a>
+            <% } %>
+            <button onclick="window.globalLogout();" class="btn btn-primary mockup-action-btn btn-auth-only hide-desktop" style="background: #ef4444; border:none;">
+              <span class="material-symbols-rounded" style="font-size: 18px;">logout</span> Logout
+            </button>
+          <% } %>
+        </div>
+    </div>
+
+    <div class="nav-right" data-user-role="<%= typeof userRole !== 'undefined' ? userRole : '' %>" data-is-logged-in="<%= typeof isLoggedIn !== 'undefined' ? isLoggedIn : 'false' %>">
+      <div class="nav-search">
+        <span class="material-symbols-rounded">search</span>
+        <input type="text" placeholder="Search..." data-i18n-placeholder="search_placeholder" />
+      </div>
+
+      <button id="lang-toggle" class="btn-icon hide-mobile" aria-label="Toggle Language">
+        <span class="material-symbols-rounded">language</span>
+      </button>
+      <button id="theme-toggle" class="btn-icon hide-mobile" aria-label="Toggle Dark Mode">
+        <span class="material-symbols-rounded">dark_mode</span>
+      </button>
+
+      <script>
+        window.globalLogout = async function() {
+          localStorage.removeItem('userJustLoggedIn');
+          localStorage.removeItem('userRole');
+          try {
+            await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' });
+          } catch (e) {}
+          window.location.href = '/logout';
+        };
+      </script>
+      <% if (!isLoggedIn) { %>
+        <a href="/login" class="btn btn-outline hide-mobile btn-login-only" style="text-decoration: none" data-i18n="btn_login">Log in</a>
+        <a href="/signup" class="btn btn-primary hide-mobile btn-login-only" style="text-decoration: none" data-i18n="btn_signup">Sign Up</a>
+      <% } else { %>
+        <% if (typeof userRole !== 'undefined' && userRole === 'admin') { %>
+          <a href="/admin" class="btn btn-outline hide-mobile btn-auth-only btn-admin-only">Dashboard</a>
+        <% } %>
+        <button onclick="window.globalLogout();" class="btn btn-primary hide-mobile btn-auth-only">Logout</button>
+      <% } %>
+    </div>
+
+    <button class="mobile-menu-btn" aria-label="Toggle Navigation">
+      <span class="material-symbols-rounded">menu</span>
+    </button>
+  </div>
+</header>

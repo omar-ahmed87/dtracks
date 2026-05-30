@@ -1,0 +1,38 @@
+[
+  {
+    "user_id": "ddca0ac1-6e68-4c4b-80c3-844cbe4286e8",
+    "course_id": 2,
+    "status": "active",
+    "progress": {
+      "completedLessons": [],
+      "quizCompleted": false,
+      "quizScore": 0
+    },
+    "enrolled_at": "2026-05-30T12:13:06.514Z",
+    "phone": "+201017322924",
+    "applicant_name": "omar ahmed",
+    "applicant_email": "cresssoomar@gmail.com",
+    "form_data": {
+      "email": "cresssoomar@gmail.com",
+      "fullName": "omar ahmed",
+      "phone": "+201017322924",
+      "courseId": 2,
+      "submittedAt": "2026-05-30T12:13:06.514Z",
+      "source": "course_registration_form"
+    },
+    "id": "39bef273-717c-465d-b017-ccd9cd7f9048",
+    "courses": {
+      "id": 2,
+      "created_at": "2026-04-21T21:26:29.431411+00:00",
+      "title": "ICDL",
+      "description": "International Computer Driving License certification to prove your essential digital skills and boost your productivity.",
+      "link": "https://www.youtube.com/watch?v=_u7Yn6L3Zpk",
+      "created_by": "510270ae-1a72-4fa3-9b29-f28979ad3f03",
+      "status": "approved",
+      "approved_at": null,
+      "rejected_at": null,
+      "price": null,
+      "name": "ICDL"
+    }
+  }
+]

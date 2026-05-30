@@ -1,0 +1,33 @@
+<section class="student-dashboard section-padding">
+  <div class="section-container">
+    <header class="dashboard-header fade-in-up">
+      <div>
+        <p class="dashboard-greeting" data-i18n="dashboard_welcome">Welcome back</p>
+        <h1 data-i18n="dashboard_title">My Learning Dashboard</h1>
+        <p class="dashboard-subtitle" data-i18n="dashboard_subtitle">Track your courses, progress, and continue where you left off.</p>
+      </div>
+      <a href="/courses" class="btn btn-primary hide-mobile-flex">
+        <span class="material-symbols-rounded">add</span>
+        <span data-i18n="btn_browse_courses">Browse Courses</span>
+      </a>
+    </header>
+
+    <div id="dashboard-loading" class="dashboard-loading">
+      <span class="material-symbols-rounded spinning">progress_activity</span>
+    </div>
+
+    <div id="dashboard-empty" class="dashboard-empty hidden reveal-up">
+      <span class="material-symbols-rounded">menu_book</span>
+      <h2 data-i18n="dashboard_empty_title">No courses yet</h2>
+      <p data-i18n="dashboard_empty_desc">Enroll in a course to see it here with your progress and classroom access.</p>
+      <a href="/courses" class="btn btn-primary btn-glow" data-i18n="btn_browse_courses">Browse Courses</a>
+    </div>
+
+    <div id="dashboard-courses" class="dashboard-courses-grid hidden"></div>
+
+    <section id="dashboard-suggestions-wrap" class="dashboard-suggestions hidden">
+      <h2 class="section-title-sm" data-i18n="dashboard_suggested">Suggested for you</h2>
+      <div id="dashboard-suggestions" class="courses-grid"></div>
+    </section>
+  </div>
+</section>

@@ -1,0 +1,53 @@
+<main class="course-details-page" data-course-link="<%= course && course.link ? course.link : '' %>">
+  <section class="course-hero-section">
+    <div class="hero-container">
+      <div class="course-hero-grid">
+        <div class="course-info">
+          <div class="course-badge" id="course-badge">Course</div>
+          <h1 id="course-title" class="hero-title"><%= course ? course.name : 'Loading...' %></h1>
+          <div class="course-description" id="course-description"><%= course ? course.description : 'Course description loading...' %></div>
+          <div class="course-meta">
+            <span class="meta-item" id="course-meta"></span>
+          </div>
+          <div class="course-actions">
+            <a id="course-link-btn" class="btn btn-primary btn-lg" target="_blank" style="display: none;">
+              <span class="material-symbols-rounded">open_in_new</span>
+              Go to Course
+            </a>
+            <button class="btn btn-outline btn-lg" onclick="shareCourse()">
+              <span class="material-symbols-rounded">share</span> Share
+            </button>
+          </div>
+        </div>
+        <div class="course-image">
+          <div class="img-placeholder" id="course-image">
+            <span class="material-symbols-rounded">image_search</span>
+            <span>Loading image...</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="course-details-section section-padding">
+    <div class="section-container">
+      <div class="details-grid">
+        <div class="details-main">
+          <div class="section-header">
+            <h2>Course Details</h2>
+          </div>
+          <div class="course-content">
+            <p id="full-description"><%= course ? course.full_description : 'Full course description will load here...' %></p>
+          </div>
+        </div>
+        <div class="details-sidebar">
+          <div class="card quick-actions">
+            <h3>Quick Actions</h3>
+            <button class="btn btn-primary w-100" onclick="startCourse()">Start Learning</button>
+            <button class="btn btn-outline w-100" onclick="enrollCourse()">Enroll Now</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>

@@ -1,0 +1,16 @@
+<%- include('layout', { 
+  title: 'Page Not Found | E-Tracks',
+  body: `
+    <div class="section-container">
+      <div class="error-card">
+        <span class="material-symbols-rounded" style="font-size: 6rem; color: var(--gray-400);">error</span>
+        <h1>404 - Page Not Found</h1>
+        <p>The course you're looking for doesn't exist or has been removed.</p>
+        <a href="/" class="btn btn-primary">Go Home</a>
+        <a href="/courses" class="btn btn-outline">Browse Courses</a>
+      </div>
+    </div>
+  `,
+  pageScripts: []
+}) %>
+

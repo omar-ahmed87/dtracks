@@ -1,0 +1,63 @@
+<section class="register-section">
+  <div class="register-card fade-in-up" id="payment-card">
+    <div class="register-header">
+      <div class="register-icon">
+        <span class="material-symbols-rounded">payments</span>
+      </div>
+      <h2 data-i18n="payment_title">Payment Confirmation</h2>
+      <p data-i18n="payment_subtitle">Complete your enrollment by transferring the amount.</p>
+    </div>
+
+    <div class="payment-info-box">
+      <div class="payment-methods-badges">
+        <span class="badge-payment">Vodafone Cash</span>
+        <span class="badge-payment">InstaPay</span>
+      </div>
+      <div class="payment-details">
+        <small data-i18n="payment_number_label">Transfer to Number</small>
+        <div class="payment-number-wrapper">
+          <h3 id="transfer-number">01017322924</h3>
+          <button id="copy-btn" class="btn-icon" title="Copy Number">
+            <span class="material-symbols-rounded">content_copy</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="payment-instructions" style="background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: var(--radius-md); padding: 32px; margin-top: 24px; text-align: center;">
+      <div style="width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--secondary)); display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+        <span class="material-symbols-rounded" style="font-size: 40px; color: white;">support_agent</span>
+      </div>
+      
+      <h3 style="font-size: 22px; font-weight: 800; margin-bottom: 12px; color: var(--text-main);" data-i18n="payment_contact_title">تواصل مع الدعم لإكمال التسجيل</h3>
+      
+      <p style="font-size: 15px; color: var(--text-muted); line-height: 1.6; margin-bottom: 24px;" data-i18n="payment_contact_desc">
+        بعد تحويل المبلغ، تواصل معنا عبر واتساب لإرسال إيصال الدفع وتفعيل حسابك فوراً
+      </p>
+
+      <a href="https://wa.me/201060572926" target="_blank" class="btn btn-primary btn-lg" style="text-decoration: none; display: inline-flex; align-items: center; gap: 10px; padding: 14px 32px;">
+        <span class="material-symbols-rounded" style="font-size: 24px;">chat</span>
+        <span data-i18n="btn_contact_support">تواصل عبر واتساب</span>
+      </a>
+
+      <div style="margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--glass-border);">
+        <p style="font-size: 13px; color: var(--text-muted); margin: 0;">
+          <span class="material-symbols-rounded" style="font-size: 16px; vertical-align: middle; color: var(--primary);">info</span>
+          <span data-i18n="payment_note">سيتم مراجعة طلبك وتفعيل حسابك خلال دقائق</span>
+        </p>
+      </div>
+    </div>
+
+    <div id="payment-success" class="payment-success-msg hidden">
+      <div class="success-icon">
+        <span class="material-symbols-rounded">check_circle</span>
+      </div>
+      <h3 data-i18n="payment_success_title">Payment Submitted!</h3>
+      <p data-i18n="payment_success_desc">We are reviewing your payment. You will receive a confirmation soon.</p>
+      <a href="/" class="btn btn-outline mt-4" data-i18n="btn_back_home">Back to Home</a>
+    </div>
+  </div>
+</section>
+
+
+<%- include('../partials/support-button') %>

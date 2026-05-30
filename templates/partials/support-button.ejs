@@ -1,0 +1,119 @@
+<style>
+  .support-button {
+    position: fixed;
+    bottom: 100px;
+    right: 40px;
+    left: auto;
+    z-index: 1000;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    color: white;
+    border: none;
+    border-radius: 60px;
+    padding: 16px 24px;
+    font-size: 14px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    box-shadow: 0 8px 32px rgba(79, 70, 229, 0.3);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    text-decoration: none;
+    font-family: 'Cairo', sans-serif;
+    white-space: nowrap;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    animation: supportPulse 3s ease-in-out infinite;
+  }
+
+  [dir="rtl"] .support-button {
+    right: 40px;
+    left: auto;
+  }
+
+  .support-button:hover {
+    transform: translateY(-4px) scale(1.05);
+    box-shadow: 0 16px 40px rgba(79, 70, 229, 0.4);
+    color: white;
+    background: linear-gradient(135deg, var(--primary-hover) 0%, #f472b6 100%);
+  }
+
+  .support-button .material-symbols-rounded {
+    font-size: 22px;
+    animation: supportIconBounce 2s ease-in-out infinite;
+  }
+
+  .support-button span:last-child {
+    font-weight: 800;
+    letter-spacing: 0.5px;
+  }
+
+  @keyframes supportPulse {
+    0%, 100% { 
+      box-shadow: 0 8px 32px rgba(79, 70, 229, 0.3);
+    }
+    50% { 
+      box-shadow: 0 8px 32px rgba(79, 70, 229, 0.5), 0 0 0 8px rgba(79, 70, 229, 0.1);
+    }
+  }
+
+  @keyframes supportIconBounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-2px); }
+  }
+
+  @media (max-width: 768px) {
+    .support-button {
+      bottom: 80px;
+      right: 20px;
+      left: auto;
+      padding: 14px 20px;
+      font-size: 13px;
+      gap: 10px;
+      border-radius: 50px;
+    }
+
+    [dir="rtl"] .support-button {
+      right: 20px;
+      left: auto;
+    }
+
+    .support-button .material-symbols-rounded {
+      font-size: 20px;
+    }
+  }
+
+  /* Hide support button text on very small screens */
+  @media (max-width: 480px) {
+    .support-button {
+      padding: 16px;
+      border-radius: 50%;
+      width: 56px;
+      height: 56px;
+      justify-content: center;
+    }
+    
+    .support-button span:last-child {
+      display: none;
+    }
+    
+    .support-button .material-symbols-rounded {
+      font-size: 24px;
+    }
+  }
+
+  /* Dark mode support */
+  body.dark-mode .support-button {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+  }
+  
+  body.dark-mode .support-button:hover {
+    background: linear-gradient(135deg, var(--primary-hover) 0%, #f472b6 100%);
+  }
+</style>
+
+<a href="https://wa.me/201060572926" target="_blank" class="support-button" aria-label="Contact Support">
+  <span class="material-symbols-rounded">support_agent</span>
+  <span data-i18n="support_button">الدعم</span>
+</a>

@@ -1,0 +1,28 @@
+<section class="course-detail-hero">
+  <div class="hero-container">
+    <div class="course-hero-content">
+      <div class="course-hero-left">
+        <div class="course-tag" data-i18n="<%= course.tagStr %>"><%= course.tagStr %></div>
+        <h1 data-i18n="<%= course.titleStr %>"><%= course.title %></h1>
+        <p data-i18n="<%= course.descStr %>"><%= course.desc %></p>
+        <div class="course-meta">
+          <span class="meta-item"><span class="material-symbols-rounded">schedule</span> <%= course.weeks %> Weeks</span>
+          <span class="meta-item"><span class="material-symbols-rounded" style="color: #f59e0b;">star</span> <%= course.rating %></span>
+          <span class="meta-item price"><%= course.price || '$99' %></span>
+        </div>
+        <div class="course-cta">
+          <button class="btn btn-primary btn-lg" onclick="window.location.href='/classroom/<%= course.id %>'">
+            Start Course <span class="material-symbols-rounded">play_arrow</span>
+          </button>
+          <button class="btn btn-outline btn-lg">
+            <span class="material-symbols-rounded">share</span> Share
+          </button>
+        </div>
+      </div>
+      <div class="course-hero-right">
+        <img src="<%= course.img %>" alt="<%= course.title %>" />
+      </div>
+    </div>
+  </div>
+</section>
+

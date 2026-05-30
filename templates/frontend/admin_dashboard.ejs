@@ -1,0 +1,550 @@
+<div class="admin-layout">
+  <div class="admin-sidebar-overlay" id="sidebarOverlay" data-action="toggle-menu"></div>
+  <!-- Mobile Toggle -->
+  <button class="admin-mobile-toggle" data-action="toggle-menu">
+    <span class="material-symbols-rounded">menu</span>
+  </button>
+
+  <!-- Sidebar -->
+  <aside class="admin-sidebar" id="adminSidebarCollapse">
+    <div class="admin-sidebar-header">
+      <a href="/" class="admin-logo">
+        <img src="/assets/logo.png" alt="E-Tracks" class="admin-logo-img">
+        <span>E-Tracks</span>
+      </a>
+    </div>
+
+    <nav class="admin-nav">
+      <button class="admin-nav-item active" data-action="switch-view" data-view="view-dashboard">
+        <span class="material-symbols-rounded">dashboard</span>
+        <span>Dashboard</span>
+      </button>
+      <button class="admin-nav-item" data-action="switch-view" data-view="view-students">
+        <span class="material-symbols-rounded">group</span>
+        Enrollment Leads
+      </button>
+      <button class="admin-nav-item" data-action="switch-view" data-view="view-course-messaging">
+        <span class="material-symbols-rounded">campaign</span>
+        <span>Students &amp; Messages</span>
+      </button>
+      <button class="admin-nav-item" data-action="switch-view" data-view="view-accounts">
+        <span class="material-symbols-rounded">badge</span>
+        User Registry
+      </button>
+      <button class="admin-nav-item" data-action="switch-view" data-view="view-manage-courses">
+        <span class="material-symbols-rounded">school</span>
+        <span>Courses</span>
+      </button>
+      <button class="admin-nav-item" data-action="switch-view" data-view="view-logs">
+        <span class="material-symbols-rounded">terminal</span>
+        <span>Logs</span>
+      </button>
+      <button class="admin-nav-item" data-action="switch-view" data-view="view-backups">
+        <span class="material-symbols-rounded">backup</span>
+        <span>Backups</span>
+      </button>
+    </nav>
+
+    <div class="admin-sidebar-footer">
+      <button class="admin-nav-item logout-btn" data-action="logout">
+        <span class="material-symbols-rounded">logout</span>
+        <span>Logout</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="admin-main">
+    <!-- ═══ Dashboard View ═══ -->
+    <div id="view-dashboard" class="admin-view" style="display: block;">
+      <div class="admin-page-header">
+        <h1>Dashboard</h1>
+        <p>Welcome back, Admin</p>
+      </div>
+
+      <!-- Stats Cards -->
+      <div class="admin-stats-grid">
+        <div class="admin-stat-card">
+          <div class="stat-icon" style="background: rgba(99,102,241,0.15); color: #6366f1;">
+            <span class="material-symbols-rounded">group</span>
+          </div>
+          <div class="stat-info">
+            <span class="stat-label">Total Users</span>
+            <span class="stat-value" id="val-total-students">—</span>
+          </div>
+        </div>
+        <div class="admin-stat-card" id="stat-2">
+          <div class="stat-icon" style="background: rgba(16,185,129,0.15); color: #10b981;">
+            <span class="material-symbols-rounded">school</span>
+          </div>
+          <div class="stat-info">
+            <span class="stat-label">Total Courses</span>
+            <span class="stat-value" id="val-total-courses">—</span>
+          </div>
+        </div>
+        <div class="admin-stat-card">
+          <div class="stat-icon" style="background: rgba(245,158,11,0.15); color: #f59e0b;">
+            <span class="material-symbols-rounded">check_circle</span>
+          </div>
+          <div class="stat-info">
+            <span class="stat-label">Published</span>
+            <span class="stat-value" id="val-published">—</span>
+          </div>
+        </div>
+        <div class="admin-stat-card">
+          <div class="stat-icon" style="background: rgba(239,68,68,0.15); color: #ef4444;">
+            <span class="material-symbols-rounded">pending</span>
+          </div>
+          <div class="stat-info">
+            <span class="stat-label">Pending</span>
+            <span class="stat-value" id="val-pending">—</span>
+          </div>
+        </div>
+        <div class="admin-stat-card">
+          <div class="stat-icon" style="background: rgba(139, 92, 246, 0.15); color: #8b5cf6;">
+            <span class="material-symbols-rounded">person_search</span>
+          </div>
+          <div class="stat-info">
+            <span class="stat-label">Active Teachers</span>
+            <span class="stat-value" id="val-total-teachers">—</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Actions Grid -->
+      <div class="admin-grid-cols-2">
+        <!-- Recent Courses -->
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <h2>Active Courses</h2>
+            <button class="btn btn-primary btn-sm" data-action="open-modal">
+              <span class="material-symbols-rounded" style="font-size:18px;">add</span> Add Course
+            </button>
+          </div>
+          <div class="admin-table-wrapper">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Course</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="course-tbody">
+                <tr><td colspan="3" style="text-align:center;padding:40px;color:var(--text-muted);">Loading analytics...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Quick Launch Pad -->
+        <div class="quick-launch-grid">
+           <div class="admin-card quick-action-card" data-action="switch-view" data-view="view-students">
+              <span class="material-symbols-rounded">person_add</span>
+              <h3>New Enrollment</h3>
+              <p>Register a student manually</p>
+           </div>
+           <div class="admin-card quick-action-card" data-action="open-modal">
+              <span class="material-symbols-rounded">library_add</span>
+              <h3>New Track</h3>
+              <p>Design a new learning path</p>
+           </div>
+           <div class="admin-card quick-action-card" id="btn-quick-backup">
+              <span class="material-symbols-rounded">database</span>
+              <h3>System Backup</h3>
+              <p>Secure current database state</p>
+           </div>
+           <div class="admin-card quick-action-card" data-action="switch-view" data-view="view-course-messaging">
+              <span class="material-symbols-rounded">campaign</span>
+              <h3>Students &amp; Messages</h3>
+              <p>View enrollments and send classroom notifications</p>
+           </div>
+           <div class="admin-card quick-action-card" data-action="switch-view" data-view="view-logs">
+              <span class="material-symbols-rounded">analytics</span>
+              <h3>Health Audit</h3>
+              <p>Check system performance</p>
+           </div>
+        </div>
+      </div>
+
+      <div class="admin-card" style="margin-top: 24px;">
+        <div class="admin-card-header" style="flex-wrap: wrap; gap: 12px;">
+          <h2>Registered &amp; Approved Students</h2>
+          <button type="button" class="btn btn-outline btn-sm" data-action="switch-view" data-view="view-course-messaging">
+            <span class="material-symbols-rounded" style="font-size:18px;">send</span>
+            Send messages
+          </button>
+        </div>
+        <div class="admin-table-wrapper">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Student</th>
+                <th>Email</th>
+                <th>Course</th>
+                <th>Status</th>
+                <th>Enrolled</th>
+                <th style="text-align: right;">Action</th>
+              </tr>
+            </thead>
+            <tbody id="dashboard-enrolled-tbody">
+              <tr><td colspan="6" style="text-align:center;padding:32px;">Loading enrollments…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ Manage Courses View ═══ -->
+    <div id="view-manage-courses" class="admin-view" style="display: none;">
+      <div class="admin-page-header">
+        <h1>Manage Courses</h1>
+        <button class="btn btn-primary btn-sm" data-action="open-modal">
+          <span class="material-symbols-rounded" style="font-size:18px;">add</span> Add New Course
+        </button>
+      </div>
+
+      <div class="admin-card">
+        <div class="admin-table-wrapper">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Course</th>
+                <th>Description</th>
+                <th>Link</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="manage-course-tbody">
+              <tr><td colspan="5" style="text-align:center;padding:40px;color:var(--text-muted);">Loading...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ Enrollment Leads View ═══ -->
+    <div id="view-students" class="admin-view" style="display: none;">
+      <div class="admin-page-header">
+        <div>
+          <h1>Enrollment Leads</h1>
+          <p>Clients who filled the course registration form</p>
+        </div>
+      </div>
+
+      <div class="admin-card">
+        <div class="admin-card-header">
+          <h2>Active Course leads</h2>
+        </div>
+        <div class="admin-table-wrapper">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Student Name</th>
+                <th>Contact Email</th>
+                <th>Phone</th>
+                <th>Requested Course</th>
+                <th>Date</th>
+                <th style="text-align: right;">Action</th>
+              </tr>
+            </thead>
+            <tbody id="enrollment-leads-tbody">
+              <tr><td colspan="6" style="text-align:center;padding:40px;">Syncing leads...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ Course Students & Messaging ═══ -->
+    <div id="view-course-messaging" class="admin-view" style="display: none;">
+      <div class="admin-page-header">
+        <div>
+          <h1>Students &amp; Messages</h1>
+          <p>Registered students per course — send announcements to their classroom inbox</p>
+        </div>
+      </div>
+
+      <div class="admin-grid-cols-2" style="gap: 24px; align-items: start;">
+        <div class="admin-card">
+          <div class="admin-card-header" style="flex-wrap: wrap; gap: 12px;">
+            <h2>Enrolled Students</h2>
+            <select id="course-students-filter" class="form-control" style="max-width: 280px; margin-left: auto;">
+              <option value="">Select a course…</option>
+            </select>
+          </div>
+          <div class="admin-table-wrapper">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th style="width: 36px;">
+                    <input type="checkbox" id="course-students-select-all" title="Select all">
+                  </th>
+                  <th>Student</th>
+                  <th>Email</th>
+                  <th>Status</th>
+                  <th style="text-align: right;">Action</th>
+                </tr>
+              </thead>
+              <tbody id="course-students-tbody">
+                <tr><td colspan="5" style="text-align:center;padding:40px;color:var(--admin-text-muted);">Choose a course to list students.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <h2>Send Announcement</h2>
+          </div>
+          <div style="padding: 0 24px 24px;">
+            <div class="form-group">
+              <label class="form-label">Course</label>
+              <select id="notify-course-id" class="form-control">
+                <option value="">Select course…</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Recipients</label>
+              <select id="notify-audience" class="form-control">
+                <option value="all">All enrolled in this course</option>
+                <option value="active">Active only (approved)</option>
+                <option value="pending">Pending approval only</option>
+                <option value="selected">Selected students (table checkboxes)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Title</label>
+              <input type="text" id="notify-title" class="form-control" placeholder="e.g. Class starts Monday" maxlength="120">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Message</label>
+              <textarea id="notify-body" class="form-control" rows="6" placeholder="Write your message to students…"></textarea>
+            </div>
+            <button type="button" class="btn btn-primary w-100" data-action="send-course-notification">
+              <span class="material-symbols-rounded" style="font-size:18px;">send</span>
+              Send to Classroom
+            </button>
+            <p style="font-size:12px;color:var(--admin-text-muted);margin-top:12px;line-height:1.5;">
+              Messages appear in each student&apos;s <strong>Classroom → Notifications</strong> tab.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ User Registry View ═══ -->
+    <div id="view-accounts" class="admin-view" style="display: none;">
+      <div class="admin-page-header">
+        <div>
+          <h1>User Registry</h1>
+          <p>All registered accounts on the E-Tracks platform</p>
+        </div>
+      </div>
+
+      <div class="admin-card">
+        <div class="admin-card-header">
+          <h2>Platform Accounts</h2>
+        </div>
+        <div class="admin-table-wrapper">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Account Name</th>
+                <th>Email Address</th>
+                <th>Phone</th>
+                <th>Joined Date</th>
+                <th>Device</th>
+                <th>Status</th>
+                <th style="text-align: right;">Action</th>
+              </tr>
+            </thead>
+            <tbody id="user-registry-tbody">
+              <tr><td colspan="7" style="text-align:center;padding:40px;">Fetching accounts...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ Logs View ═══ -->
+    <div id="view-logs" class="admin-view" style="display: none;">
+      <div class="admin-page-header">
+        <h1>Error Logs</h1>
+        <button class="btn btn-outline btn-sm" id="btn-clear-logs">
+          <span class="material-symbols-rounded" style="font-size:18px;">delete_sweep</span> Clear Logs
+        </button>
+      </div>
+
+      <div class="admin-card">
+        <div class="admin-logs-container" id="logs-container">
+          <p style="text-align:center;color:var(--text-muted);padding:40px;">Loading logs...</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ Backups View ═══ -->
+    <div id="view-backups" class="admin-view" style="display: none;">
+      <div class="admin-page-header">
+        <h1>Database Backups</h1>
+        <button class="btn btn-primary btn-sm" id="btn-create-backup">
+          <span class="material-symbols-rounded" style="font-size:18px;">add_to_photos</span> Create Backup
+        </button>
+      </div>
+
+      <div class="admin-card">
+        <div class="admin-table-wrapper">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Backup ID</th>
+                <th>Tables</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="backups-tbody">
+              <tr><td colspan="4" style="text-align:center;padding:40px;color:var(--text-muted);">Loading backups...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <p style="margin-top:16px;font-size:13px;color:var(--text-muted);">
+        <span class="material-symbols-rounded" style="font-size:16px;vertical-align:middle;">lock</span>
+        Backups are AES-256 encrypted and stored securely on the server.
+      </p>
+    </div>
+  </main>
+</div>
+
+<!-- ═══ Course Modal (Add/Edit) ═══ -->
+<div class="admin-modal-overlay" id="courseModal">
+  <div class="admin-modal">
+    <div class="admin-modal-header">
+      <h3 id="course-modal-title">Add New Course</h3>
+      <button class="btn-icon" data-action="close-modal" data-target="courseModal">
+        <span class="material-symbols-rounded">close</span>
+      </button>
+    </div>
+    <div class="admin-modal-body">
+      <input type="hidden" id="edit-course-id">
+      <div class="form-group">
+        <label class="form-label">Course Name</label>
+        <input type="text" id="course-name" class="form-control" placeholder="e.g. Web Development Basics" required>
+      </div>
+      <div class="form-row">
+        <div class="form-group flex-1">
+          <label class="form-label">Category (Tag)</label>
+          <input type="text" id="add-course-tag" class="form-control" placeholder="e.g. tag_comp">
+        </div>
+        <div class="form-group flex-1">
+          <label class="form-label">Duration (Weeks)</label>
+          <input type="number" id="add-course-weeks" class="form-control" placeholder="4">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Image URL</label>
+        <input type="url" id="add-course-img" class="form-control" placeholder="https://images.unsplash.com/...">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Description</label>
+        <textarea id="course-description" class="form-control" rows="3" placeholder="Course description (min 10 chars)"></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Course Link (URL)</label>
+        <input type="url" id="course-link" class="form-control" placeholder="https://...">
+      </div>
+      <div class="form-row">
+        <div class="form-group flex-1">
+          <label class="form-label">Rating</label>
+          <input type="text" id="add-course-rating" class="form-control" placeholder="4.8">
+        </div>
+        <div class="form-group flex-1">
+          <label class="form-label">Status</label>
+          <select id="course-status" class="form-control">
+            <option value="pending">Pending</option>
+            <option value="approved">Approved & Live</option>
+            <option value="rejected">Rejected</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="admin-modal-footer">
+      <button class="btn btn-outline" data-action="close-modal" data-target="courseModal">Cancel</button>
+      <button class="btn btn-primary" data-action="save-course-final">Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ User Edit Modal ═══ -->
+<div class="admin-modal-overlay" id="userEditModal">
+  <div class="admin-modal">
+    <div class="admin-modal-header">
+      <h3>Edit User</h3>
+      <button class="btn-icon" data-action="close-modal" data-target="userEditModal">
+        <span class="material-symbols-rounded">close</span>
+      </button>
+    </div>
+    <div class="admin-modal-body">
+      <input type="hidden" id="edit-user-id">
+      <div class="form-group">
+        <label class="form-label">Username</label>
+        <input type="text" id="edit-user-name" class="form-control" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email Address</label>
+        <input type="email" id="edit-user-email" class="form-control" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Role</label>
+        <select id="edit-user-role" class="form-control">
+          <option value="user">Student</option>
+          <option value="teacher">Teacher</option>
+          <option value="admin">Administrator</option>
+        </select>
+      </div>
+    </div>
+    <div class="admin-modal-footer">
+      <button class="btn btn-outline" data-action="close-modal" data-target="userEditModal">Cancel</button>
+      <button class="btn btn-primary" data-action="save-user-update">Update User</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══ Message Modal ═══ -->
+<div class="admin-modal-overlay" id="messageModal">
+  <div class="admin-modal">
+    <div class="admin-modal-header">
+      <h3>Send Message</h3>
+      <button class="btn-icon" data-action="close-message-modal">
+        <span class="material-symbols-rounded">close</span>
+      </button>
+    </div>
+    <div class="admin-modal-body">
+      <input type="hidden" id="message-user-id">
+      <input type="hidden" id="message-course-id">
+      <div class="form-group">
+        <label class="form-label">To</label>
+        <input type="text" id="message-to" class="form-control" readonly>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Course</label>
+        <select id="message-course-select" class="form-control"></select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Title</label>
+        <input type="text" id="message-title" class="form-control" placeholder="Notification title" maxlength="120">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Message</label>
+        <textarea id="message-body" class="form-control" rows="4" placeholder="Type your message..."></textarea>
+      </div>
+    </div>
+    <div class="admin-modal-footer">
+      <button class="btn btn-outline" data-action="close-message-modal">Cancel</button>
+      <button class="btn btn-primary" data-action="send-direct-message">Send</button>
+    </div>
+  </div>
+</div>

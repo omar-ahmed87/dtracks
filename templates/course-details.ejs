@@ -1,0 +1,52 @@
+<%- include('partials/course-hero', { course: course }) %>
+<section class="course-overview section-padding">
+  <div class="section-container">
+    <div class="section-header">
+      <h2 data-i18n="course_overview">Course Overview</h2>
+    </div>
+    <div class="features-grid">
+      <% course.modules.slice(0, 3).forEach((mod, index) => { %>
+        <div class="feature-item">
+          <span class="material-symbols-rounded feature-icon">chrome_reader_mode</span>
+          <h4><%= mod.en %></h4>
+          <span><%= mod.l || 0 %> Lessons</span>
+        </div>
+      <% }) %>
+    </div>
+  </div>
+</section>
+
+<section class="course-video-preview section-padding bg-light">
+  <div class="section-container">
+    <div class="video-wrapper">
+      <iframe src="https://www.youtube.com/embed/<%= course.videoId || 'Mtk7X8mN474' %>" width="100%" height="500" frameborder="0" allowfullscreen></iframe>
+    </div>
+  </div>
+</section>
+
+<section class="course-instructor section-padding">
+  <div class="section-container">
+    <div class="instructor-card">
+      <div class="instructor-left">
+        <img src="<%= course.instructor.img %>" alt="<%= course.instructor.nameStr %>" />
+      </div>
+      <div class="instructor-right">
+        <h3><%= course.instructor.nameStr %></h3>
+        <p><%= course.instructor.roleStr %></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="course-cta-footer">
+  <div class="section-container">
+    <div class="cta-wrapper">
+      <h2 data-i18n="ready_start_course">Ready to Start?</h2>
+      <button class="btn btn-primary btn-lg" onclick="window.location.href='/classroom/<%= course.id %>'">
+        <span data-i18n="btn_start_course">Start Learning Now</span>
+        <span class="material-symbols-rounded">rocket_launch</span>
+      </button>
+    </div>
+  </div>
+</section>
+
