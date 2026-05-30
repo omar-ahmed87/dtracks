@@ -20,7 +20,7 @@ const { logError } = require("./logger");
 const backupMiddleware = require("./backupMiddleware");
 
 const app = express();
-const port = process.env.PORT || 3000;
+const PORT = process.env.PORT || 10000;
 
 // View engine setup
 app.set("view engine", "ejs");
@@ -219,8 +219,8 @@ app.use((err, req, res, next) => {
 // Skip only for serverless platforms (Vercel, Netlify)
 if (!process.env.NETLIFY && !process.env.VERCEL) {
   const host = process.env.RAILWAY_ENVIRONMENT ? '0.0.0.0' : 'localhost';
-  app.listen(port, host, () => {
-    console.log(`Server running on ${host}:${port}`);
+  app.listen(PORT, host, () => {
+    console.log(`Server running at http://${host}:${PORT}`);
   });
 }
 
