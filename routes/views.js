@@ -71,16 +71,22 @@ async function loadNavCourses(req, res, next) {
 router.use(loadNavCourses);
 
 router.get("/", (req, res) => {
-  res.render("frontend/index", {
-    title: "Home | E-Tracks",
-    description:
-      "E-Tracks is a premium learning management system offering expert-led courses in technology, design, and business.",
-    path: "/",
-    lang: "en",
-    isLoggedIn: !!req.user,
-    userRole: req.user ? req.user.role : "",
-    pageScripts: [],
-  });
+  console.log('✓ Rendering home page (frontend/index)');
+  try {
+    res.render("frontend/index", {
+      title: "Home | E-Tracks",
+      description:
+        "E-Tracks is a premium learning management system offering expert-led courses in technology, design, and business.",
+      path: "/",
+      lang: "en",
+      isLoggedIn: !!req.user,
+      userRole: req.user ? req.user.role : "",
+      pageScripts: [],
+    });
+  } catch (err) {
+    console.error('❌ Error rendering home page:', err);
+    throw err;
+  }
 });
 
 router.get("/login", (req, res) => {
