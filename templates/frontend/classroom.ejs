@@ -1,32 +1,37 @@
 <style>
-  /* Premium LMS Sidebar Layout */
+  /* =============================================
+     CLASSROOM PAGE - LAYOUT
+     ============================================= */
+
+  /* Page wrapper - starts below navbar */
   .classroom-page {
     min-height: calc(100vh - 80px);
     display: flex;
     background: var(--bg-color);
     font-family: 'Outfit', sans-serif;
     color: var(--text-main);
+    margin-top: 80px;
   }
   [dir="rtl"] .classroom-page {
     font-family: 'Cairo', sans-serif;
   }
 
+  /* Flex container holding sidebar + main */
   .lms-container {
-    display: grid;
-    grid-template-columns: 280px 1fr;
+    display: flex;
     width: 100%;
     position: relative;
-    align-items: start;
-  }
-  @media (max-width: 991px) {
-    .lms-container {
-      grid-template-columns: 1fr;
-    }
+    align-items: flex-start;
   }
 
-  /* Sidebar styling */
+  /* ── SIDEBAR (fixed, always on left) ── */
   .lms-sidebar {
-    background: rgba(255, 255, 255, 0.02);
+    position: fixed;
+    top: 80px;
+    left: 0;
+    width: 280px;
+    height: calc(100vh - 80px);
+    background: var(--glass-bg);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     border-right: 1px solid var(--glass-border);
@@ -34,34 +39,62 @@
     display: flex;
     flex-direction: column;
     gap: 24px;
-    height: calc(100vh - 80px);
-    position: sticky;
-    top: 80px;
     overflow-y: auto;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    z-index: 10;
-  }
-  [dir="rtl"] .lms-sidebar {
-    border-right: none;
-    border-left: 1px solid var(--glass-border);
-    left: auto;
-    right: 0;
+    overflow-x: hidden;
+    z-index: 200;
+    box-sizing: border-box;
+    transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    /* Prevent Lenis/transform from breaking fixed positioning */
+    transform: translateZ(0);
+    will-change: transform;
   }
 
+  /* ── MAIN CONTENT (offset by sidebar) ── */
+  .lms-main {
+    flex: 1;
+    margin-left: 280px;
+    width: calc(100% - 280px);
+    min-height: calc(100vh - 80px);
+    padding: 40px 30px 30px;
+    box-sizing: border-box;
+    overflow-x: hidden;
+    background: var(--bg-color);
+  }
+
+  /* ── RTL ── */
+  [dir="rtl"] .lms-sidebar {
+    left: auto;
+    right: 0;
+    border-right: none;
+    border-left: 1px solid var(--glass-border);
+  }
+  [dir="rtl"] .lms-main {
+    margin-left: 0;
+    margin-right: 280px;
+  }
+
+  /* ── MOBILE (≤ 991px) ── */
   @media (max-width: 991px) {
+    /* Hide sidebar off-screen */
     .lms-sidebar {
-      position: fixed;
       left: -280px;
-      top: 80px;
-      height: calc(100vh - 80px);
-      width: 280px;
-      z-index: 1000;
       background: var(--bg-color);
-      box-shadow: var(--shadow-xl);
+      box-shadow: 4px 0 24px rgba(0,0,0,0.15);
+      z-index: 300;
     }
     .lms-sidebar.open {
       left: 0;
     }
+
+    /* Main takes full width, padded below mobile bar */
+    .lms-main {
+      margin-left: 0;
+      width: 100%;
+      padding: 20px 16px;
+      padding-top: 72px;
+    }
+
+    /* RTL mobile */
     [dir="rtl"] .lms-sidebar {
       left: auto;
       right: -280px;
@@ -69,6 +102,31 @@
     [dir="rtl"] .lms-sidebar.open {
       right: 0;
       left: auto;
+    }
+    [dir="rtl"] .lms-main {
+      margin-right: 0;
+    }
+  }
+
+  /* ── MOBILE TOP BAR (hamburger) ── */
+  .lms-mobile-bar {
+    display: none;
+    position: fixed;
+    top: 80px;
+    left: 0;
+    right: 0;
+    z-index: 199;
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--glass-border);
+    padding: 10px 20px;
+    justify-content: space-between;
+    align-items: center;
+  }
+  @media (max-width: 991px) {
+    .lms-mobile-bar {
+      display: flex;
     }
   }
 
@@ -160,19 +218,7 @@
   }
 
   /* Main content area */
-  .lms-main {
-    padding: 40px;
-    overflow-y: auto;
-    background: var(--bg-color);
-  }
-  [dir="rtl"] .lms-main {
-    margin-left: 0;
-    margin-right: 0;
-  }
   @media (max-width: 768px) {
-    .lms-main {
-      padding: 20px;
-    }
     #dashboard-shortcuts-row {
       grid-template-columns: 1fr !important;
     }
@@ -183,8 +229,6 @@
     #btn-continue-course-home {
       width: 100%;
     }
-    
-    /* Ensure Get Started button is visible on mobile */
     .empty-state-actions .btn {
       width: 100%;
       max-width: 280px;
@@ -196,6 +240,7 @@
   .tab-panel {
     display: none;
     animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    
   }
   .tab-panel.active {
     display: block;
@@ -653,26 +698,6 @@
     color: var(--primary);
   }
 
-  /* Sidebar Toggle Mobile */
-  .lms-mobile-bar {
-    display: none;
-    background: rgba(255, 255, 255, 0.02);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--glass-border);
-    padding: 12px 20px;
-    justify-content: space-between;
-    align-items: center;
-    position: sticky;
-    top: 80px;
-    z-index: 100;
-  }
-  @media (max-width: 991px) {
-    .lms-mobile-bar {
-      display: flex;
-    }
-  }
-
   /* Lesson Module Accordion */
   .lesson-module-card.open .lesson-module-body {
     display: block !important;
@@ -803,7 +828,7 @@
     <div class="lms-container">
       
       <!-- Premium App Sidebar -->
-      <aside class="lms-sidebar" id="lms-nav-drawer">
+      <aside class="lms-sidebar" id="lms-nav-drawer" data-lenis-prevent>
         <div class="sidebar-profile">
           <div class="avatar-wrapper">
             <span class="material-symbols-rounded">person</span>
@@ -842,7 +867,7 @@
     </aside>
 
       <!-- App Core View -->
-      <main class="lms-main">
+      <main class="lms-main" data-lenis-prevent>
 
         <!-- ──────────────────────────────────────────────────────────
              DASHBOARD TAB PANEL
@@ -1240,6 +1265,8 @@
         if (body)    body.style.display      = isOpen ? 'block' : 'none';
       });
     });
+
+    /* ── 4. Mobile sidebar toggle handled by classroom.js initLmsNavigation() ── */
 
   });
 </script>

@@ -339,19 +339,57 @@ function initLmsNavigation() {
       }
 
       // Close mobile drawer on link click
-      if (drawer) drawer.classList.remove("open");
+      if (window.innerWidth <= 991) closeMobileSidebar();
     });
   });
+
+  // Create overlay for mobile sidebar
+  let overlay = document.getElementById("lms-sidebar-overlay");
+  if (!overlay) {
+    overlay = document.createElement("div");
+    overlay.id = "lms-sidebar-overlay";
+    overlay.style.cssText = [
+      "display:none",
+      "position:fixed",
+      "inset:0",
+      "background:rgba(0,0,0,0.45)",
+      "backdrop-filter:blur(2px)",
+      "z-index:250",
+      "opacity:0",
+      "transition:opacity 0.3s ease",
+    ].join(";");
+    document.body.appendChild(overlay);
+  }
+
+  function openMobileSidebar() {
+    if (!drawer) return;
+    overlay.style.display = "block";
+    requestAnimationFrame(() => { overlay.style.opacity = "1"; });
+    drawer.classList.add("open");
+    document.body.style.overflow = "hidden";
+  }
+
+  function closeMobileSidebar() {
+    if (!drawer) return;
+    drawer.classList.remove("open");
+    overlay.style.opacity = "0";
+    setTimeout(() => { overlay.style.display = "none"; }, 300);
+    document.body.style.overflow = "";
+  }
+
+  // Expose globally so classroom.ejs script can also call it
+  window.closeMobileSidebar = closeMobileSidebar;
+
+  overlay.addEventListener("click", closeMobileSidebar);
 
   const toggle = $("#lms-sidebar-toggle");
   if (toggle && drawer) {
     toggle.addEventListener("click", (e) => {
       e.stopPropagation();
-      drawer.classList.toggle("open");
-    });
-    document.addEventListener("click", (e) => {
-      if (!e.target.closest("#lms-nav-drawer")) {
-        drawer.classList.remove("open");
+      if (drawer.classList.contains("open")) {
+        closeMobileSidebar();
+      } else {
+        openMobileSidebar();
       }
     });
   }

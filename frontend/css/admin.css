@@ -1,5 +1,14 @@
 /* Admin Dashboard Styles - E-Tracks */
 
+/* Force LTR direction for admin dashboard - always left sidebar */
+.admin-layout,
+.admin-sidebar,
+.admin-main,
+.admin-content {
+  direction: ltr !important;
+  text-align: left !important;
+}
+
 /* --- Dashboard Layout Isolation --- */
 header, footer, .global-bg-decorations {
   display: none !important;
@@ -50,6 +59,7 @@ main {
 .admin-sidebar {
   width: var(--admin-sidebar-width);
   min-width: var(--admin-sidebar-width);
+  left: 0; /* Always on the left */
   background: var(--glass-bg);
   backdrop-filter: blur(12px);
   border-right: 1px solid var(--admin-border);

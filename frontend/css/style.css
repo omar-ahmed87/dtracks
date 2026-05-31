@@ -4997,3 +4997,24 @@ body.dark-mode .step-card {
   }
 }
 
+/* Classroom Mobile Responsive */
+@media (max-width: 968px) {
+  .classroom-shell.lms-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  .classroom-sidebar {
+    display: none; /* Hide sidebar on mobile */
+  }
+  
+  .classroom-panel {
+    width: 100%;
+    padding: 16px;
+  }
+  
+  .classroom-page {
+    padding: 16px;
+  }
+}
+
