@@ -68,17 +68,24 @@ export const initUI = () => {
       });
     }
 
-    // Close mobile menu when a navigation link is clicked (mobile only)
-    navMenu.querySelectorAll('a, button').forEach(el => {
-      el.addEventListener('click', (e) => {
+    // Add transition overlay on nav links clicks only (not hash links or theme/lang buttons)
+    navMenu.querySelectorAll('a[href]').forEach(el => {
+      const href = el.getAttribute('href') || '';
+      // For hash/scroll links - just close menu
+      if (href.startsWith('#') || href.includes('/#')) {
+        el.addEventListener('click', () => {
+          navMenu.classList.remove('active');
+          if (mobileMenuIcon) mobileMenuIcon.textContent = 'menu';
+        });
+        return;
+      }
+      // For page navigation links - show overlay
+      el.addEventListener('click', () => {
         if (navMenu.classList.contains('active')) {
           const loadingOverlay = document.createElement('div');
           loadingOverlay.style.cssText = `
             position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
+            top: 0; left: 0; right: 0; bottom: 0;
             background: rgba(0, 0, 0, 0.1);
             backdrop-filter: blur(2px);
             z-index: 9998;
