@@ -15,13 +15,26 @@ if (!SUPABASE_URL || !SUPABASE_KEY) {
   console.error('Please configure SUPABASE_URL and SUPABASE_SERVICE_KEY in Railway variables.');
 }
 
-// Create client even if credentials are missing (will fail on actual use, but won't crash server startup)
-const supabase = SUPABASE_URL && SUPABASE_KEY 
-  ? createClient(SUPABASE_URL, SUPABASE_KEY, {
+// Create client with error handling for WebSocket issues
+let supabase = null;
+
+if (SUPABASE_URL && SUPABASE_KEY) {
+  try {
+    supabase = createClient(SUPABASE_URL, SUPABASE_KEY, {
       auth: {
         persistSession: false,
       },
-    })
-  : null;
+      realtime: {
+        // Disable realtime to avoid WebSocket errors on Node.js 20
+        enabled: false,
+      },
+    });
+    console.log('✓ Supabase client created successfully');
+  } catch (err) {
+    console.error('⚠️  Error creating Supabase client:', err.message);
+    console.error('Server will continue without Supabase');
+    supabase = null;
+  }
+}
 
 module.exports = supabase;
