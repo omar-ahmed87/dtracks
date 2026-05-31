@@ -84,10 +84,11 @@ export const initUI = () => {
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0, 0, 0, 0.05);
+            background: rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(2px);
             z-index: 9998;
             opacity: 0;
-            transition: opacity 0.2s ease;
+            transition: opacity 0.3s ease;
             pointer-events: none;
           `;
           document.body.appendChild(loadingOverlay);

@@ -373,7 +373,10 @@ function initLmsNavigation() {
     overlay.style.cssText = [
       "display:none",
       "position:fixed",
-      "inset:0",
+      "top:0",
+      "left:280px",
+      "right:0",
+      "bottom:0",
       "background:rgba(0,0,0,0.45)",
       "z-index:250",
       "opacity:0",
@@ -385,11 +388,9 @@ function initLmsNavigation() {
   function openMobileSidebar() {
     if (!drawer) return;
     overlay.style.display = "block";
-    requestAnimationFrame(() => {
-      overlay.style.opacity = "1";
-      drawer.style.left = "0";
-      drawer.classList.add("open");
-    });
+    requestAnimationFrame(() => { overlay.style.opacity = "1"; });
+    drawer.style.left = "0";
+    drawer.classList.add("open");
     document.body.style.overflow = "hidden";
   }
 
@@ -402,10 +403,15 @@ function initLmsNavigation() {
     document.body.style.overflow = "";
   }
 
-  // Expose globally so classroom.ejs script can also call it
+  // Expose globally
   window.closeMobileSidebar = closeMobileSidebar;
 
-  overlay.addEventListener("click", closeMobileSidebar);
+  // Only close when clicking OUTSIDE the sidebar
+  overlay.addEventListener("click", (e) => {
+    if (!e.target.closest("#lms-nav-drawer")) {
+      closeMobileSidebar();
+    }
+  });
 
   const toggle = $("#lms-sidebar-toggle");
   if (toggle && drawer) {
