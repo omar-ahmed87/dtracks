@@ -44,7 +44,7 @@ if (!BACKUP_SECRET || BACKUP_SECRET === 'change-this-to-a-strong-backup-password
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY, {
   auth: { persistSession: false },
   realtime: {
-    // Disable realtime to avoid WebSocket errors on Node.js 20
+    // Disable realtime to avoid WebSocket errors on Node.js 20 (Railway fix)
     enabled: false,
   },
 });
