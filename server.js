@@ -18,13 +18,33 @@ const ejs = require("ejs");
 const expressLayouts = require("express-ejs-layouts");
 const path = require("path");
 
-const { router: authRouter, authenticateJWT } = require("./routes/auth");
-const { router: courseRouter } = require("./routes/courses");
-const { router: adminRouter } = require("./routes/admin");
-const { router: studentRouter } = require("./routes/student");
-const { router: viewsRouter } = require("./routes/views");
-const { logError } = require("./logger");
-const backupMiddleware = require("./backupMiddleware");
+// Import routes with error handling
+let authRouter, authenticateJWT, courseRouter, adminRouter, studentRouter, viewsRouter, logError, backupMiddleware;
+
+try {
+  const authModule = require("./routes/auth");
+  authRouter = authModule.router;
+  authenticateJWT = authModule.authenticateJWT;
+  courseRouter = require("./routes/courses").router;
+  adminRouter = require("./routes/admin").router;
+  studentRouter = require("./routes/student").router;
+  viewsRouter = require("./routes/views").router;
+  logError = require("./logger").logError;
+  backupMiddleware = require("./backupMiddleware");
+  console.log('✓ All routes loaded successfully');
+} catch (err) {
+  console.error('⚠️  Error loading routes:', err.message);
+  console.error('Server will start with limited functionality');
+  // Create dummy middleware to prevent crashes
+  authRouter = express.Router();
+  courseRouter = express.Router();
+  adminRouter = express.Router();
+  studentRouter = express.Router();
+  viewsRouter = express.Router();
+  authenticateJWT = (req, res, next) => next();
+  logError = (err) => console.error(err);
+  backupMiddleware = (req, res, next) => next();
+}
 
 const app = express();
 const PORT = process.env.PORT || 10000;
