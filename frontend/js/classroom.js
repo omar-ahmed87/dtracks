@@ -353,7 +353,6 @@ function initLmsNavigation() {
       "position:fixed",
       "inset:0",
       "background:rgba(0,0,0,0.45)",
-      "backdrop-filter:blur(2px)",
       "z-index:250",
       "opacity:0",
       "transition:opacity 0.3s ease",
@@ -363,9 +362,12 @@ function initLmsNavigation() {
 
   function openMobileSidebar() {
     if (!drawer) return;
+    // Show overlay FIRST (behind sidebar)
     overlay.style.display = "block";
-    requestAnimationFrame(() => { overlay.style.opacity = "1"; });
-    drawer.classList.add("open");
+    requestAnimationFrame(() => {
+      overlay.style.opacity = "1";
+      drawer.classList.add("open");
+    });
     document.body.style.overflow = "hidden";
   }
 
