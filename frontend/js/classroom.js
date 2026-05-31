@@ -321,6 +321,28 @@ function initLmsNavigation() {
   const panels = document.querySelectorAll(".tab-panel");
   const drawer = $("#lms-nav-drawer");
 
+  // Force sidebar hidden on mobile immediately on init
+  function applySidebarState() {
+    if (!drawer) return;
+    if (window.innerWidth <= 1024) {
+      if (!drawer.classList.contains("open")) {
+        drawer.style.left = "-280px";
+        drawer.style.right = "";
+      }
+    } else {
+      drawer.style.left = "0";
+      drawer.style.right = "";
+      // RTL
+      if (document.documentElement.dir === "rtl") {
+        drawer.style.left = "";
+        drawer.style.right = "0";
+      }
+    }
+  }
+
+  applySidebarState();
+  window.addEventListener("resize", applySidebarState);
+
   links.forEach((link) => {
     link.addEventListener("click", () => {
       links.forEach((l) => l.classList.remove("active"));
@@ -362,10 +384,10 @@ function initLmsNavigation() {
 
   function openMobileSidebar() {
     if (!drawer) return;
-    // Show overlay FIRST (behind sidebar)
     overlay.style.display = "block";
     requestAnimationFrame(() => {
       overlay.style.opacity = "1";
+      drawer.style.left = "0";
       drawer.classList.add("open");
     });
     document.body.style.overflow = "hidden";
@@ -374,6 +396,7 @@ function initLmsNavigation() {
   function closeMobileSidebar() {
     if (!drawer) return;
     drawer.classList.remove("open");
+    drawer.style.left = "-280px";
     overlay.style.opacity = "0";
     setTimeout(() => { overlay.style.display = "none"; }, 300);
     document.body.style.overflow = "";
