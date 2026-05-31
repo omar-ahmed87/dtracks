@@ -73,9 +73,6 @@ export const initUI = () => {
     navMenu.querySelectorAll('a').forEach(link => {
       link.addEventListener('click', (e) => {
         if (navMenu.classList.contains('active')) {
-          // Prevent double clicks
-          navMenu.style.pointerEvents = 'none';
-          
           // Add a gentle loading indicator
           const loadingOverlay = document.createElement('div');
           loadingOverlay.style.cssText = `
