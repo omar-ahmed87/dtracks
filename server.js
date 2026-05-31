@@ -47,11 +47,20 @@ try {
 }
 
 const app = express();
+// Railway provides PORT automatically, fallback to 10000 for local dev
 const PORT = process.env.PORT || 10000;
+
+console.log(`✓ Using PORT: ${PORT}`);
+console.log(`✓ NODE_ENV: ${process.env.NODE_ENV || 'development'}`);
 
 // Health check endpoint FIRST - before any middleware
 app.get("/health", (req, res) => {
-  res.status(200).json({ status: "ok", timestamp: new Date().toISOString() });
+  res.status(200).json({ 
+    status: "ok", 
+    timestamp: new Date().toISOString(),
+    port: PORT,
+    env: process.env.NODE_ENV || 'development'
+  });
 });
 
 // View engine setup
@@ -251,17 +260,20 @@ app.use((err, req, res, next) => {
 // Start server (Railway, Render, local, etc.)
 // Skip only for serverless platforms (Vercel, Netlify)
 if (!process.env.NETLIFY && !process.env.VERCEL) {
-  // Railway needs 0.0.0.0, local dev can use localhost
-  const host = process.env.RAILWAY_ENVIRONMENT || process.env.RAILWAY_PUBLIC_DOMAIN ? '0.0.0.0' : 'localhost';
+  // Always use 0.0.0.0 for Railway and production, localhost for local dev
+  const isProduction = process.env.NODE_ENV === 'production';
+  const host = isProduction ? '0.0.0.0' : 'localhost';
+  
   const server = app.listen(PORT, host, () => {
     console.log(`✓ Server running at http://${host}:${PORT}`);
     console.log(`✓ Health check available at http://${host}:${PORT}/health`);
     console.log(`✓ Environment: ${process.env.NODE_ENV || 'development'}`);
+    console.log(`✓ Host binding: ${host}`);
   });
 
   // Handle server errors
   server.on('error', (err) => {
-    console.error('Server error:', err);
+    console.error('❌ Server error:', err);
     process.exit(1);
   });
 }
