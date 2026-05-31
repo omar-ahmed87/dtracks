@@ -59,6 +59,13 @@ router.use(softAuth);
 
 async function loadNavCourses(req, res, next) {
   try {
+    const supabase = require("../supabaseClient");
+    if (!supabase) {
+      console.warn('[navCourses] Supabase not configured, skipping courses load');
+      res.locals.navCourses = [];
+      res.locals.csrfToken = res.locals.csrfToken || "";
+      return next();
+    }
     res.locals.navCourses = await listApprovedCourses();
   } catch (err) {
     console.warn("[navCourses]", err.message);
