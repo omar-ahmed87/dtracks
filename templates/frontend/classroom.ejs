@@ -43,8 +43,8 @@
     overflow-x: hidden;
     z-index: 200;
     box-sizing: border-box;
-    transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    /* Prevent Lenis/transform from breaking fixed positioning */
+    transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     transform: translateZ(0);
     will-change: transform;
   }
@@ -73,8 +73,8 @@
     margin-right: 280px;
   }
 
-  /* ── MOBILE (≤ 991px) ── */
-  @media (max-width: 991px) {
+  /* ── MOBILE (≤ 1024px) ── */
+  @media (max-width: 1024px) {
     /* Hide sidebar off-screen */
     .lms-sidebar {
       left: -280px;
@@ -124,7 +124,7 @@
     justify-content: space-between;
     align-items: center;
   }
-  @media (max-width: 991px) {
+  @media (max-width: 1024px) {
     .lms-mobile-bar {
       display: flex;
     }

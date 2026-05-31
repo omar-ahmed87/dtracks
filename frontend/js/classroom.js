@@ -339,7 +339,7 @@ function initLmsNavigation() {
       }
 
       // Close mobile drawer on link click
-      if (window.innerWidth <= 991) closeMobileSidebar();
+      if (window.innerWidth <= 1024) closeMobileSidebar();
     });
   });
 
