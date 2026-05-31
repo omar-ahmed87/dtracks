@@ -127,10 +127,9 @@ export const initUI = () => {
     requestAnimationFrame(function() {
       requestAnimationFrame(function() { overlay.style.opacity = '1'; });
     });
+    // Use GET /logout directly - no CSRF needed
     setTimeout(function() {
-      fetch('/api/auth/logout', { method: 'POST', credentials: 'include' })
-        .catch(function(){})
-        .finally(function() { window.location.href = '/logout'; });
+      window.location.href = '/logout';
     }, 250);
   };
 
