@@ -168,13 +168,13 @@ const authLimiter = rateLimit({
 // Automatic Backups Middleware (Intercepts mutations)
 app.use(backupMiddleware);
 
-// Routes
-app.use("/", viewsRouter);
-
-// Health check endpoint for Railway
+// Health check endpoint for Railway (before all routes)
 app.get("/health", (req, res) => {
   res.status(200).json({ status: "ok", timestamp: new Date().toISOString() });
 });
+
+// Routes
+app.use("/", viewsRouter);
 
 app.get("/api/csrf-token", (req, res) => {
   res.json({ csrfToken: req.csrfToken() });
