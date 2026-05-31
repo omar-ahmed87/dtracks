@@ -260,15 +260,13 @@ app.use((err, req, res, next) => {
 // Start server (Railway, Render, local, etc.)
 // Skip only for serverless platforms (Vercel, Netlify)
 if (!process.env.NETLIFY && !process.env.VERCEL) {
-  // Always use 0.0.0.0 for Railway and production, localhost for local dev
-  const isProduction = process.env.NODE_ENV === 'production';
-  const host = isProduction ? '0.0.0.0' : 'localhost';
+  // Always bind to 0.0.0.0 for cloud deployments (Railway, Render, etc.)
+  const host = '0.0.0.0';
   
   const server = app.listen(PORT, host, () => {
-    console.log(`✓ Server running at http://${host}:${PORT}`);
-    console.log(`✓ Health check available at http://${host}:${PORT}/health`);
+    console.log(`✓ Server running on port ${PORT}`);
+    console.log(`✓ Health check available at /health`);
     console.log(`✓ Environment: ${process.env.NODE_ENV || 'development'}`);
-    console.log(`✓ Host binding: ${host}`);
   });
 
   // Handle server errors
