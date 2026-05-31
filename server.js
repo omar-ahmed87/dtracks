@@ -210,7 +210,9 @@ const authLimiter = rateLimit({
 app.use(backupMiddleware);
 
 // Routes
+console.log('✓ Registering routes...');
 app.use("/", viewsRouter);
+console.log('✓ Views router registered');
 
 app.get("/api/csrf-token", (req, res) => {
   res.json({ csrfToken: req.csrfToken() });
@@ -219,6 +221,7 @@ app.use("/api/auth", authLimiter, authRouter);
 app.use("/api/courses", courseRouter);
 app.use("/api/student", studentRouter);
 app.use("/api/admin", adminRouter);
+console.log('✓ All routes registered');
 
 // 404 — HTML pages for browser navigation, JSON for API
 app.use((req, res) => {
