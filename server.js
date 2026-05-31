@@ -1,5 +1,10 @@
 require('dotenv').config();
 
+// Log startup info
+console.log('Starting E-Tracks server...');
+console.log('Environment:', process.env.NODE_ENV || 'development');
+console.log('Port:', process.env.PORT || 10000);
+
 const express = require("express");
 const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
@@ -224,9 +229,18 @@ app.use((err, req, res, next) => {
 // Start server (Railway, Render, local, etc.)
 // Skip only for serverless platforms (Vercel, Netlify)
 if (!process.env.NETLIFY && !process.env.VERCEL) {
-  const host = process.env.RAILWAY_ENVIRONMENT ? '0.0.0.0' : 'localhost';
-  app.listen(PORT, host, () => {
-    console.log(`Server running at http://${host}:${PORT}`);
+  // Railway needs 0.0.0.0, local dev can use localhost
+  const host = process.env.RAILWAY_ENVIRONMENT || process.env.RAILWAY_PUBLIC_DOMAIN ? '0.0.0.0' : 'localhost';
+  const server = app.listen(PORT, host, () => {
+    console.log(`✓ Server running at http://${host}:${PORT}`);
+    console.log(`✓ Health check available at http://${host}:${PORT}/health`);
+    console.log(`✓ Environment: ${process.env.NODE_ENV || 'development'}`);
+  });
+
+  // Handle server errors
+  server.on('error', (err) => {
+    console.error('Server error:', err);
+    process.exit(1);
   });
 }
 
