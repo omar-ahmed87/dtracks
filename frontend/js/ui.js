@@ -116,11 +116,13 @@ export const initUI = () => {
 
 
   // --- Logout button handling ---
-  const logoutButtons = document.querySelectorAll('.btn-logout, [data-action="logout"]');
+  const logoutButtons = document.querySelectorAll('.btn-logout, [data-action="logout"], #btn-logout-mobile, #btn-logout-desktop');
   logoutButtons.forEach(btn => {
     btn.addEventListener('click', (e) => {
       e.preventDefault();
-      if (typeof window.logout === 'function') {
+      if (typeof window.globalLogout === 'function') {
+        window.globalLogout();
+      } else if (typeof window.logout === 'function') {
         window.logout();
       }
     });

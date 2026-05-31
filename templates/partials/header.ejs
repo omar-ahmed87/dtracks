@@ -48,7 +48,7 @@
                 <span class="material-symbols-rounded" style="font-size: 18px;">dashboard</span> Dashboard
               </a>
             <% } %>
-            <button onclick="window.globalLogout();" class="btn btn-primary mockup-action-btn btn-auth-only hide-desktop" style="background: #ef4444; border:none;">
+            <button id="btn-logout-mobile" class="btn btn-primary mockup-action-btn btn-auth-only hide-desktop" style="background: #ef4444; border:none;">
               <span class="material-symbols-rounded" style="font-size: 18px;">logout</span> Logout
             </button>
           <% } %>
@@ -69,10 +69,10 @@
       </button>
 
       <script>
-        window.globalLogout = async function() {
+        window.globalLogout = function() {
           localStorage.removeItem('userJustLoggedIn');
           localStorage.removeItem('userRole');
-          const overlay = document.createElement('div');
+          var overlay = document.createElement('div');
           overlay.style.position = 'fixed';
           overlay.style.inset = '0';
           overlay.style.background = 'rgba(0,0,0,0.1)';
@@ -82,14 +82,16 @@
           overlay.style.transition = 'opacity 0.2s ease';
           overlay.style.pointerEvents = 'none';
           document.body.appendChild(overlay);
-          requestAnimationFrame(() => {
-            requestAnimationFrame(() => { overlay.style.opacity = '1'; });
+          requestAnimationFrame(function() {
+            requestAnimationFrame(function() { overlay.style.opacity = '1'; });
           });
-          await new Promise(r => setTimeout(r, 250));
-          try {
-            await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' });
-          } catch (e) {}
-          window.location.href = '/logout';
+          setTimeout(function() {
+            fetch('/api/auth/logout', { method: 'POST', credentials: 'include' })
+              .catch(function(){})
+              .finally(function() {
+                window.location.href = '/logout';
+              });
+          }, 250);
         };
       </script>
       <% if (!isLoggedIn) { %>
@@ -99,7 +101,7 @@
         <% if (typeof userRole !== 'undefined' && userRole === 'admin') { %>
           <a href="/admin" class="btn btn-outline hide-mobile btn-auth-only btn-admin-only">Dashboard</a>
         <% } %>
-        <button onclick="window.globalLogout();" class="btn btn-primary hide-mobile btn-auth-only">Logout</button>
+        <button onclick="window.globalLogout();" class="btn btn-primary hide-mobile btn-auth-only" id="btn-logout-desktop">Logout</button>
       <% } %>
     </div>
 
