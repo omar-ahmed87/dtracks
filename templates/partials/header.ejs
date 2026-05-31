@@ -72,6 +72,20 @@
         window.globalLogout = async function() {
           localStorage.removeItem('userJustLoggedIn');
           localStorage.removeItem('userRole');
+          const overlay = document.createElement('div');
+          overlay.style.position = 'fixed';
+          overlay.style.inset = '0';
+          overlay.style.background = 'rgba(0,0,0,0.1)';
+          overlay.style.backdropFilter = 'blur(2px)';
+          overlay.style.zIndex = '9999';
+          overlay.style.opacity = '0';
+          overlay.style.transition = 'opacity 0.2s ease';
+          overlay.style.pointerEvents = 'none';
+          document.body.appendChild(overlay);
+          requestAnimationFrame(() => {
+            requestAnimationFrame(() => { overlay.style.opacity = '1'; });
+          });
+          await new Promise(r => setTimeout(r, 250));
           try {
             await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' });
           } catch (e) {}

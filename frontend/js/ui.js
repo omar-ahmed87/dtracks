@@ -69,11 +69,9 @@ export const initUI = () => {
     }
 
     // Close mobile menu when a navigation link is clicked (mobile only)
-    // Keep menu visible with smooth loading state during page transition
-    navMenu.querySelectorAll('a').forEach(link => {
-      link.addEventListener('click', (e) => {
+    navMenu.querySelectorAll('a, button').forEach(el => {
+      el.addEventListener('click', (e) => {
         if (navMenu.classList.contains('active')) {
-          // Add a gentle loading indicator
           const loadingOverlay = document.createElement('div');
           loadingOverlay.style.cssText = `
             position: fixed;
@@ -89,13 +87,8 @@ export const initUI = () => {
             pointer-events: none;
           `;
           document.body.appendChild(loadingOverlay);
-          
-          // Fade in the overlay smoothly
-          setTimeout(() => {
-            loadingOverlay.style.opacity = '1';
-          }, 10);
+          setTimeout(() => { loadingOverlay.style.opacity = '1'; }, 10);
         }
-        // Menu and overlay will disappear when new page loads
       });
     });
 
