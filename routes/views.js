@@ -57,6 +57,12 @@ const softAuth = (req, res, next) => {
 
 router.use(softAuth);
 
+// Debug middleware to log all requests
+router.use((req, res, next) => {
+  console.log(`[ViewsRouter] ${req.method} ${req.path}`);
+  next();
+});
+
 async function loadNavCourses(req, res, next) {
   try {
     const supabase = require("../supabaseClient");
