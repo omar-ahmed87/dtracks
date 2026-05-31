@@ -22,18 +22,32 @@ const path = require("path");
 let authRouter, authenticateJWT, courseRouter, adminRouter, studentRouter, viewsRouter, logError, backupMiddleware;
 
 try {
+  console.log('Loading routes...');
   const authModule = require("./routes/auth");
   authRouter = authModule.router;
   authenticateJWT = authModule.authenticateJWT;
+  console.log('✓ Auth router loaded');
+  
   courseRouter = require("./routes/courses").router;
+  console.log('✓ Course router loaded');
+  
   adminRouter = require("./routes/admin").router;
+  console.log('✓ Admin router loaded');
+  
   studentRouter = require("./routes/student").router;
+  console.log('✓ Student router loaded');
+  
   viewsRouter = require("./routes/views").router;
+  console.log('✓ Views router loaded');
+  console.log('✓ Views router type:', typeof viewsRouter);
+  console.log('✓ Views router is function:', typeof viewsRouter === 'function');
+  
   logError = require("./logger").logError;
   backupMiddleware = require("./backupMiddleware");
   console.log('✓ All routes loaded successfully');
 } catch (err) {
   console.error('⚠️  Error loading routes:', err.message);
+  console.error('Full error:', err);
   console.error('Server will start with limited functionality');
   // Create dummy middleware to prevent crashes
   authRouter = express.Router();
