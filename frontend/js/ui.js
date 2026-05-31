@@ -69,13 +69,36 @@ export const initUI = () => {
     }
 
     // Close mobile menu when a navigation link is clicked (mobile only)
+    // Keep menu visible with smooth loading state during page transition
     navMenu.querySelectorAll('a').forEach(link => {
-      link.addEventListener('click', () => {
-        navMenu.classList.remove('active');
-        if (mobileMenuIcon) mobileMenuIcon.textContent = 'menu';
-        // Reset any open dropdowns within the mobile menu to avoid overlapping after navigation
-        const openDropdowns = navMenu.querySelectorAll('.dropdown.open');
-        openDropdowns.forEach(d => d.classList.remove('open'));
+      link.addEventListener('click', (e) => {
+        if (navMenu.classList.contains('active')) {
+          // Prevent double clicks
+          navMenu.style.pointerEvents = 'none';
+          
+          // Add a gentle loading indicator
+          const loadingOverlay = document.createElement('div');
+          loadingOverlay.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(2px);
+            z-index: 9998;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+          `;
+          document.body.appendChild(loadingOverlay);
+          
+          // Fade in the overlay smoothly
+          setTimeout(() => {
+            loadingOverlay.style.opacity = '1';
+          }, 10);
+        }
+        // Menu and overlay will disappear when new page loads
       });
     });
 
