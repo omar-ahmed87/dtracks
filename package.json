@@ -38,6 +38,7 @@
     "package.json": "^0.0.0",
     "serverless-http": "^4.0.0",
     "twilio": "^5.13.1",
+    "ws": "^8.21.0",
     "xss": "^1.0.12"
   }
 }

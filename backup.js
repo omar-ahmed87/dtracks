@@ -15,6 +15,15 @@
 require('dotenv').config();
 
 const { createClient } = require('@supabase/supabase-js');
+
+// Import ws for WebSocket support on Node.js 20
+let WebSocket;
+try {
+  WebSocket = require('ws');
+} catch (err) {
+  console.warn('ws package not found for backup.js');
+}
+
 const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
@@ -43,8 +52,9 @@ if (!BACKUP_SECRET || BACKUP_SECRET === 'change-this-to-a-strong-backup-password
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY, {
   auth: { persistSession: false },
-  realtime: {
-    // Disable realtime to avoid WebSocket errors on Node.js 20 (Railway fix)
+  realtime: WebSocket ? {
+    transport: WebSocket,
+  } : {
     enabled: false,
   },
 });

@@ -2,6 +2,14 @@ require('dotenv').config();
 
 const { createClient } = require('@supabase/supabase-js');
 
+// Import ws for WebSocket support on Node.js 20
+let WebSocket;
+try {
+  WebSocket = require('ws');
+} catch (err) {
+  console.warn('ws package not found, realtime features will be disabled');
+}
+
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_KEY = process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_KEY;
 
@@ -20,15 +28,25 @@ let supabase = null;
 
 if (SUPABASE_URL && SUPABASE_KEY) {
   try {
-    supabase = createClient(SUPABASE_URL, SUPABASE_KEY, {
+    const clientOptions = {
       auth: {
         persistSession: false,
       },
-      realtime: {
-        // Disable realtime to avoid WebSocket errors on Node.js 20
+    };
+    
+    // Add WebSocket transport if available
+    if (WebSocket) {
+      clientOptions.realtime = {
+        transport: WebSocket,
+      };
+    } else {
+      // Disable realtime if ws is not available
+      clientOptions.realtime = {
         enabled: false,
-      },
-    });
+      };
+    }
+    
+    supabase = createClient(SUPABASE_URL, SUPABASE_KEY, clientOptions);
     console.log('✓ Supabase client created successfully');
   } catch (err) {
     console.error('⚠️  Error creating Supabase client:', err.message);
