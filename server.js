@@ -4,6 +4,8 @@ require('dotenv').config();
 console.log('Starting E-Tracks server...');
 console.log('Environment:', process.env.NODE_ENV || 'development');
 console.log('Port:', process.env.PORT || 10000);
+console.log('Supabase URL configured:', !!process.env.SUPABASE_URL);
+console.log('Supabase Key configured:', !!(process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_KEY));
 
 const express = require("express");
 const helmet = require("helmet");
@@ -26,6 +28,11 @@ const backupMiddleware = require("./backupMiddleware");
 
 const app = express();
 const PORT = process.env.PORT || 10000;
+
+// Health check endpoint FIRST - before any middleware
+app.get("/health", (req, res) => {
+  res.status(200).json({ status: "ok", timestamp: new Date().toISOString() });
+});
 
 // View engine setup
 app.set("view engine", "ejs");
@@ -172,11 +179,6 @@ const authLimiter = rateLimit({
 
 // Automatic Backups Middleware (Intercepts mutations)
 app.use(backupMiddleware);
-
-// Health check endpoint for Railway (before all routes)
-app.get("/health", (req, res) => {
-  res.status(200).json({ status: "ok", timestamp: new Date().toISOString() });
-});
 
 // Routes
 app.use("/", viewsRouter);
