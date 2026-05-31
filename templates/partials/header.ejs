@@ -68,32 +68,7 @@
         <span class="material-symbols-rounded">dark_mode</span>
       </button>
 
-      <script>
-        window.globalLogout = function() {
-          localStorage.removeItem('userJustLoggedIn');
-          localStorage.removeItem('userRole');
-          var overlay = document.createElement('div');
-          overlay.style.position = 'fixed';
-          overlay.style.inset = '0';
-          overlay.style.background = 'rgba(0,0,0,0.1)';
-          overlay.style.backdropFilter = 'blur(2px)';
-          overlay.style.zIndex = '9999';
-          overlay.style.opacity = '0';
-          overlay.style.transition = 'opacity 0.2s ease';
-          overlay.style.pointerEvents = 'none';
-          document.body.appendChild(overlay);
-          requestAnimationFrame(function() {
-            requestAnimationFrame(function() { overlay.style.opacity = '1'; });
-          });
-          setTimeout(function() {
-            fetch('/api/auth/logout', { method: 'POST', credentials: 'include' })
-              .catch(function(){})
-              .finally(function() {
-                window.location.href = '/logout';
-              });
-          }, 250);
-        };
-      </script>
+      
       <% if (!isLoggedIn) { %>
         <a href="/login" class="btn btn-outline hide-mobile btn-login-only" style="text-decoration: none" data-i18n="btn_login">Log in</a>
         <a href="/signup" class="btn btn-primary hide-mobile btn-login-only" style="text-decoration: none" data-i18n="btn_signup">Sign Up</a>
@@ -101,7 +76,7 @@
         <% if (typeof userRole !== 'undefined' && userRole === 'admin') { %>
           <a href="/admin" class="btn btn-outline hide-mobile btn-auth-only btn-admin-only">Dashboard</a>
         <% } %>
-        <button onclick="window.globalLogout();" class="btn btn-primary hide-mobile btn-auth-only" id="btn-logout-desktop">Logout</button>
+        <button class="btn btn-primary hide-mobile btn-auth-only" id="btn-logout-desktop">Logout</button>
       <% } %>
     </div>
 

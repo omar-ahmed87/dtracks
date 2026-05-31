@@ -79,24 +79,24 @@ export const initUI = () => {
         });
         return;
       }
-      // For page navigation links - show overlay
-      el.addEventListener('click', () => {
-        if (navMenu.classList.contains('active')) {
-          const loadingOverlay = document.createElement('div');
-          loadingOverlay.style.cssText = `
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0, 0, 0, 0.1);
-            backdrop-filter: blur(2px);
-            z-index: 9998;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            pointer-events: none;
-          `;
-          document.body.appendChild(loadingOverlay);
-          setTimeout(() => { loadingOverlay.style.opacity = '1'; }, 10);
-        }
+      // For page navigation links - show overlay then navigate
+      el.addEventListener('click', (e) => {
+        if (!navMenu.classList.contains('active')) return;
+        e.preventDefault();
+        // Remove any existing overlays first
+        document.querySelectorAll('.nav-transition-overlay').forEach(o => o.remove());
+        const loadingOverlay = document.createElement('div');
+        loadingOverlay.className = 'nav-transition-overlay';
+        loadingOverlay.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.1);backdrop-filter:blur(2px);z-index:9998;opacity:0;transition:opacity 0.3s ease;pointer-events:none;';
+        document.body.appendChild(loadingOverlay);
+        setTimeout(() => { loadingOverlay.style.opacity = '1'; }, 10);
+        setTimeout(() => { window.location.href = href; }, 320);
       });
+    });
+
+    // Remove overlay on pageshow (back/forward navigation)
+    window.addEventListener('pageshow', () => {
+      document.querySelectorAll('.nav-transition-overlay').forEach(o => o.remove());
     });
 
     // Close mobile menu when theme or language toggle buttons are clicked (mobile only)
@@ -116,15 +116,29 @@ export const initUI = () => {
 
 
   // --- Logout button handling ---
-  const logoutButtons = document.querySelectorAll('.btn-logout, [data-action="logout"], #btn-logout-mobile, #btn-logout-desktop');
-  logoutButtons.forEach(btn => {
-    btn.addEventListener('click', (e) => {
+  // Define globalLogout here (not inline HTML) to avoid CSP issues on Chrome mobile
+  window.globalLogout = function() {
+    localStorage.removeItem('userJustLoggedIn');
+    localStorage.removeItem('userRole');
+    var overlay = document.createElement('div');
+    overlay.className = 'nav-transition-overlay';
+    overlay.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.1);backdrop-filter:blur(2px);z-index:9999;opacity:0;transition:opacity 0.2s ease;pointer-events:none;';
+    document.body.appendChild(overlay);
+    requestAnimationFrame(function() {
+      requestAnimationFrame(function() { overlay.style.opacity = '1'; });
+    });
+    setTimeout(function() {
+      fetch('/api/auth/logout', { method: 'POST', credentials: 'include' })
+        .catch(function(){})
+        .finally(function() { window.location.href = '/logout'; });
+    }, 250);
+  };
+
+  const logoutButtons = document.querySelectorAll('#btn-logout-mobile, #btn-logout-desktop, .btn-logout, [data-action="logout"]');
+  logoutButtons.forEach(function(btn) {
+    btn.addEventListener('click', function(e) {
       e.preventDefault();
-      if (typeof window.globalLogout === 'function') {
-        window.globalLogout();
-      } else if (typeof window.logout === 'function') {
-        window.logout();
-      }
+      window.globalLogout();
     });
   });
 
