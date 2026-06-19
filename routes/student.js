@@ -96,6 +96,7 @@ router.post("/classroom/:courseId/progress", authenticateJWT, async (req, res, n
       const set = new Set(progress.completedLessons || []);
       set.add(lessonId);
       progress.completedLessons = [...set];
+      progress.lastLessonId = lessonId;
     }
     if (quizCompleted) {
       progress.quizCompleted = true;

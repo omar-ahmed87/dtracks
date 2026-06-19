@@ -10,7 +10,7 @@
     <div class="admin-sidebar-header">
       <a href="/" class="admin-logo">
         <img src="/assets/logo.png" alt="E-Tracks" class="admin-logo-img">
-        <span>E-Tracks</span>
+        <span>D-Tracks</span>
       </a>
     </div>
 
@@ -22,6 +22,14 @@
       <button class="admin-nav-item" data-action="switch-view" data-view="view-students">
         <span class="material-symbols-rounded">group</span>
         Enrollment Leads
+      </button>
+      <button class="admin-nav-item" data-action="switch-view" data-view="view-approved-students">
+        <span class="material-symbols-rounded">person_pin</span>
+        Students
+      </button>
+      <button class="admin-nav-item" data-action="switch-view" data-view="view-content-management">
+        <span class="material-symbols-rounded">library_books</span>
+        Content Management
       </button>
       <button class="admin-nav-item" data-action="switch-view" data-view="view-course-messaging">
         <span class="material-symbols-rounded">campaign</span>
@@ -139,7 +147,7 @@
 
         <!-- Quick Launch Pad -->
         <div class="quick-launch-grid">
-           <div class="admin-card quick-action-card" data-action="switch-view" data-view="view-students">
+           <div class="admin-card quick-action-card" data-action="open-modal" data-target="enrollmentModal">
               <span class="material-symbols-rounded">person_add</span>
               <h3>New Enrollment</h3>
               <p>Register a student manually</p>
@@ -167,30 +175,95 @@
         </div>
       </div>
 
-      <div class="admin-card" style="margin-top: 24px;">
-        <div class="admin-card-header" style="flex-wrap: wrap; gap: 12px;">
-          <h2>Registered &amp; Approved Students</h2>
-          <button type="button" class="btn btn-outline btn-sm" data-action="switch-view" data-view="view-course-messaging">
-            <span class="material-symbols-rounded" style="font-size:18px;">send</span>
-            Send messages
-          </button>
+    </div>
+
+    <!-- ═══ Approved Students View ═══ -->
+    <div id="view-approved-students" class="admin-view" style="display: none;">
+      <div class="admin-page-header">
+        <div>
+          <h1>Students Registry</h1>
+          <p>Approved students enrolled in courses</p>
         </div>
+      </div>
+
+      <div class="admin-card">
+        <div class="admin-card-header" style="flex-wrap: wrap; gap: 16px; align-items: center;">
+          <div style="display: flex; gap: 12px; flex: 1; min-width: 300px; flex-wrap: wrap;">
+            <input type="text" id="students-search" class="form-control" placeholder="Search by name or email..." style="max-width: 300px;">
+            <select id="students-course-filter" class="form-control" style="max-width: 200px;">
+              <option value="">All Courses</option>
+            </select>
+            <select id="students-status-filter" class="form-control" style="max-width: 150px;">
+              <option value="">All Statuses</option>
+              <option value="active">Active/Accepted</option>
+              <option value="pending">Pending</option>
+              <option value="rejected">Rejected</option>
+            </select>
+            <select id="students-sort" class="form-control" style="max-width: 150px;">
+              <option value="date-desc">Newest First</option>
+              <option value="date-asc">Oldest First</option>
+              <option value="name-asc">Name A-Z</option>
+              <option value="name-desc">Name Z-A</option>
+            </select>
+          </div>
+        </div>
+
         <div class="admin-table-wrapper">
           <table class="admin-table">
             <thead>
               <tr>
                 <th>Student</th>
-                <th>Email</th>
                 <th>Course</th>
+                <th>Status (Are you?)</th>
+                <th>College &amp; Dept</th>
+                <th>Level</th>
+                <th>Age/Gender</th>
+                <th>Enrolled Date</th>
                 <th>Status</th>
-                <th>Enrolled</th>
-                <th style="text-align: right;">Action</th>
+                <th style="text-align: right;">Actions</th>
               </tr>
             </thead>
-            <tbody id="dashboard-enrolled-tbody">
-              <tr><td colspan="6" style="text-align:center;padding:32px;">Loading enrollments…</td></tr>
+            <tbody id="students-registry-tbody">
+              <tr><td colspan="9" style="text-align:center;padding:40px;">Loading students registry...</td></tr>
             </tbody>
           </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ Content Management (CMS) View ═══ -->
+    <div id="view-content-management" class="admin-view" style="display: none;">
+      <div class="admin-page-header">
+        <div>
+          <h1>Content Management</h1>
+          <p>Add, edit, delete, publish, and reorder course modules &amp; lessons</p>
+        </div>
+      </div>
+
+      <div class="admin-card" style="padding: 24px;">
+        <div class="form-group" style="max-width: 400px; margin-bottom: 24px;">
+          <label class="form-label" style="font-weight: 600;">Select Course to Edit</label>
+          <select id="cms-course-select" class="form-control">
+            <option value="">Select a course…</option>
+          </select>
+        </div>
+
+        <div id="cms-syllabus-wrapper" style="display: none;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h2 id="cms-course-title" style="margin: 0; font-size: 1.5rem; color: var(--primary);">Course Syllabus</h2>
+            <button class="btn btn-primary btn-sm" id="btn-cms-add-module">
+              <span class="material-symbols-rounded" style="font-size: 18px;">add</span> Add Module
+            </button>
+          </div>
+
+          <div id="cms-modules-list" class="cms-modules-container" style="display: flex; flex-direction: column; gap: 20px;">
+            <!-- Modules & lessons rendered dynamically -->
+          </div>
+        </div>
+
+        <div id="cms-empty-state" style="text-align: center; padding: 60px 20px; color: var(--text-muted);">
+          <span class="material-symbols-rounded" style="font-size: 48px; margin-bottom: 12px;">library_books</span>
+          <p>Please select a course from the dropdown above to manage its syllabus content.</p>
         </div>
       </div>
     </div>
@@ -512,6 +585,47 @@
   </div>
 </div>
 
+<!-- ═══ Manual Enrollment Modal ═══ -->
+<div class="admin-modal-overlay" id="enrollmentModal">
+  <div class="admin-modal">
+    <div class="admin-modal-header">
+      <h3>New Manual Enrollment</h3>
+      <button class="btn-icon" data-action="close-modal" data-target="enrollmentModal">
+        <span class="material-symbols-rounded">close</span>
+      </button>
+    </div>
+    <div class="admin-modal-body">
+      <div class="form-group">
+        <label class="form-label">Select Student Account</label>
+        <select id="enroll-student-select" class="form-control" required>
+          <option value="">Choose student...</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Select Course</label>
+        <select id="enroll-course-select" class="form-control" required>
+          <option value="">Choose course...</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Phone Number (Optional)</label>
+        <input type="text" id="enroll-phone" class="form-control" placeholder="Defaults to account phone">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Enrollment Status</label>
+        <select id="enroll-status" class="form-control">
+          <option value="active">Active (Instantly Unlocks Content)</option>
+          <option value="pending">Pending (Awaiting Approval)</option>
+        </select>
+      </div>
+    </div>
+    <div class="admin-modal-footer">
+      <button class="btn btn-outline" data-action="close-modal" data-target="enrollmentModal">Cancel</button>
+      <button class="btn btn-primary" data-action="save-enrollment-manual">Create Enrollment</button>
+    </div>
+  </div>
+</div>
+
 
 <!-- ═══ Message Modal ═══ -->
 <div class="admin-modal-overlay" id="messageModal">
@@ -545,6 +659,120 @@
     <div class="admin-modal-footer">
       <button class="btn btn-outline" data-action="close-message-modal">Cancel</button>
       <button class="btn btn-primary" data-action="send-direct-message">Send</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ Student Details Modal ═══ -->
+<div class="admin-modal-overlay" id="studentDetailsModal">
+  <div class="admin-modal" style="max-width: 600px;">
+    <div class="admin-modal-header">
+      <h3>Student Profile Details</h3>
+      <button class="btn-icon" data-action="close-modal" data-target="studentDetailsModal">
+        <span class="material-symbols-rounded">close</span>
+      </button>
+    </div>
+    <div class="admin-modal-body" id="student-details-body">
+      <!-- Loaded dynamically -->
+    </div>
+    <div class="admin-modal-footer">
+      <button class="btn btn-primary" data-action="close-modal" data-target="studentDetailsModal">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ CMS Module Modal (Add/Edit) ═══ -->
+<div class="admin-modal-overlay" id="cmsModuleModal">
+  <div class="admin-modal">
+    <div class="admin-modal-header">
+      <h3 id="cms-module-modal-title">Add Syllabus Module</h3>
+      <button class="btn-icon" data-action="close-modal" data-target="cmsModuleModal">
+        <span class="material-symbols-rounded">close</span>
+      </button>
+    </div>
+    <div class="admin-modal-body">
+      <input type="hidden" id="cms-module-index">
+      <div class="form-group">
+        <label class="form-label">Module Title (English)</label>
+        <input type="text" id="cms-module-title-en" class="form-control" placeholder="e.g. Module 1: Introduction" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Module Title (Arabic)</label>
+        <input type="text" id="cms-module-title-ar" class="form-control" placeholder="e.g. الوحدة 1: المقدمة" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Time Duration Info</label>
+        <input type="text" id="cms-module-time" class="form-control" placeholder="e.g. 1.5 Hrs or 45 Min">
+      </div>
+    </div>
+    <div class="admin-modal-footer">
+      <button class="btn btn-outline" data-action="close-modal" data-target="cmsModuleModal">Cancel</button>
+      <button class="btn btn-primary" id="btn-cms-save-module">Save Module</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ CMS Lesson Modal (Add/Edit) ═══ -->
+<div class="admin-modal-overlay" id="cmsLessonModal">
+  <div class="admin-modal" style="max-width: 600px;">
+    <div class="admin-modal-header">
+      <h3 id="cms-lesson-modal-title">Add Lesson</h3>
+      <button class="btn-icon" data-action="close-modal" data-target="cmsLessonModal">
+        <span class="material-symbols-rounded">close</span>
+      </button>
+    </div>
+    <div class="admin-modal-body">
+      <input type="hidden" id="cms-lesson-module-index">
+      <input type="hidden" id="cms-lesson-index">
+      <div class="form-row">
+        <div class="form-group flex-1">
+          <label class="form-label">Lesson Title (English)</label>
+          <input type="text" id="cms-lesson-title-en" class="form-control" placeholder="e.g. Lesson 1: Overview" required>
+        </div>
+        <div class="form-group flex-1">
+          <label class="form-label">Lesson Title (Arabic)</label>
+          <input type="text" id="cms-lesson-title-ar" class="form-control" placeholder="e.g. الدرس 1: نظرة عامة" required>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group flex-1">
+          <label class="form-label">Type</label>
+          <select id="cms-lesson-type" class="form-control">
+            <option value="video">Video</option>
+            <option value="quiz">Quiz</option>
+            <option value="project">Project / Task</option>
+            <option value="pdf">PDF Read</option>
+            <option value="code">Coding Lab</option>
+            <option value="link">External Link</option>
+          </select>
+        </div>
+        <div class="form-group flex-1">
+          <label class="form-label">Duration Info</label>
+          <input type="text" id="cms-lesson-duration" class="form-control" placeholder="e.g. 10m or 15 Questions">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Video Embed / Link URL (YouTube)</label>
+        <input type="url" id="cms-lesson-video-url" class="form-control" placeholder="https://www.youtube.com/watch?v=...">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Attachment / PDF Link URL</label>
+        <input type="url" id="cms-lesson-attachment" class="form-control" placeholder="https://...">
+      </div>
+      <div class="form-row">
+        <div class="form-group flex-1" style="display:flex; align-items:center; gap:8px;">
+          <input type="checkbox" id="cms-lesson-published" checked>
+          <label for="cms-lesson-published" class="form-label" style="margin:0;">Published / Active</label>
+        </div>
+        <div class="form-group flex-1" style="display:flex; align-items:center; gap:8px;">
+          <input type="checkbox" id="cms-lesson-visible" checked>
+          <label for="cms-lesson-visible" class="form-label" style="margin:0;">Visible to Students</label>
+        </div>
+      </div>
+    </div>
+    <div class="admin-modal-footer">
+      <button class="btn btn-outline" data-action="close-modal" data-target="cmsLessonModal">Cancel</button>
+      <button class="btn btn-primary" id="btn-cms-save-lesson">Save Lesson</button>
     </div>
   </div>
 </div>

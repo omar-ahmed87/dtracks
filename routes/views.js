@@ -12,7 +12,8 @@ const authCookieOptions = {
   httpOnly: true,
   secure: process.env.NODE_ENV === "production",
   sameSite: "lax",
-  maxAge: parseInt(process.env.AUTH_COOKIE_MAX_AGE, 10) || 1000 * 60 * 60 * 24 * 7,
+  maxAge:
+    parseInt(process.env.AUTH_COOKIE_MAX_AGE, 10) || 1000 * 60 * 60 * 24 * 7,
   path: "/",
 };
 
@@ -67,7 +68,9 @@ async function loadNavCourses(req, res, next) {
   try {
     const supabase = require("../supabaseClient");
     if (!supabase) {
-      console.warn('[navCourses] Supabase not configured, skipping courses load');
+      console.warn(
+        "[navCourses] Supabase not configured, skipping courses load",
+      );
       res.locals.navCourses = [];
       res.locals.csrfToken = res.locals.csrfToken || "";
       return next();
@@ -84,7 +87,7 @@ async function loadNavCourses(req, res, next) {
 router.use(loadNavCourses);
 
 router.get("/", (req, res) => {
-  console.log('✓ Rendering home page (frontend/index)');
+  console.log("✓ Rendering home page (frontend/index)");
   try {
     res.render("frontend/index", {
       title: "Home | E-Tracks",
@@ -97,7 +100,7 @@ router.get("/", (req, res) => {
       pageScripts: [],
     });
   } catch (err) {
-    console.error('❌ Error rendering home page:', err);
+    console.error("❌ Error rendering home page:", err);
     throw err;
   }
 });
@@ -139,50 +142,97 @@ router.get("/about", (req, res) => {
   });
 });
 
-router.get("/register", (req, res) => {
+router.get("/register", loginRedirectAuth, async (req, res) => {
+  const courseId = req.query.course || req.query.courseId;
+  if (courseId) {
+    try {
+      const sessionUser = await studentStore.resolveUserFromToken(req.user);
+      if (sessionUser) {
+        const enrollments = await studentStore.listEnrollmentsForUser(
+          sessionUser.id,
+        );
+        const match = enrollments.find(
+          (e) => String(e.course_id) === String(courseId),
+        );
+        if (match) {
+          return res.redirect(`/classroom?course=${courseId}`);
+        }
+      }
+    } catch (err) {
+      console.warn("[views.js /register] check enrollment error:", err.message);
+    }
+  }
+
   res.render("frontend/register", {
     title: "Register | E-Tracks",
     lang: "en",
     isLoggedIn: !!req.user,
     userRole: req.user ? req.user.role : "",
-    pageScripts: ["/js/auth.js?v=5.2"],
+    pageScripts: ["/js/auth.js?v=5.3"],
     formError: req.query.error || "",
     preselectCourse: req.query.course || "",
     navCourses: res.locals.navCourses || [],
   });
 });
 
-/** Course registration — server POST (no fetch required). */
-router.post("/register/submit", async (req, res, next) => {
+router.post("/register/submit", loginRedirectAuth, async (req, res, next) => {
   try {
-    const email = (req.body?.email || "").trim().toLowerCase();
-    const fullName = (req.body?.fullName || "").trim();
-    const phone = String(req.body?.phone || "").trim();
     const courseId = req.body?.course || req.body?.courseId;
+    const phone = String(req.body?.phone || "").trim();
 
-    if (!email || !fullName || !phone || !courseId) {
+    // Additional fields:
+    const education_status = req.body?.education_status;
+    const college = req.body?.college;
+    const department = req.body?.department;
+    const level = req.body?.level;
+    const experience = req.body?.experience;
+    const age = req.body?.age;
+    const gender = req.body?.gender;
+
+    if (
+      !phone ||
+      !courseId ||
+      !education_status ||
+      !college ||
+      !department ||
+      !level ||
+      !experience ||
+      !age ||
+      !gender
+    ) {
       return res.redirect(
-        `/register?error=${encodeURIComponent("Please fill all fields")}&course=${courseId || ""}`,
+        `/register?error=${encodeURIComponent("Please fill all required fields")}&course=${courseId || ""}`,
       );
     }
 
     let forceUserId = null;
-    if (req.user?.sub) {
-      try {
-        const sessionUser = await studentStore.resolveUserFromToken(req.user);
-        if (sessionUser) forceUserId = sessionUser.id;
-      } catch {
-        /* ignore */
-      }
+    try {
+      const sessionUser = await studentStore.resolveUserFromToken(req.user);
+      if (sessionUser) forceUserId = sessionUser.id;
+    } catch (err) {
+      console.warn("[register/submit] resolveUser error:", err.message);
+    }
+
+    if (!forceUserId) {
+      return res.redirect(
+        `/login?error=${encodeURIComponent("Session expired. Please sign in again.")}`,
+      );
     }
 
     const result = await studentStore.submitCourseEnrollment({
-      email,
-      fullName,
       phone,
       courseId,
       req,
       forceUserId,
+      extraInfo: {
+        education_status,
+        college,
+        department,
+        level,
+        experience,
+        age,
+        gender,
+      },
     });
 
     if (result.error) {
@@ -191,8 +241,6 @@ router.post("/register/submit", async (req, res, next) => {
       );
     }
 
-    const token = await generateToken(result.user);
-    res.cookie(COOKIE_NAME, token, authCookieOptions);
     res.redirect(`/classroom?course=${courseId}&enrolled=1`);
   } catch (err) {
     console.error("[register/submit]", err);
@@ -239,8 +287,32 @@ router.get("/courses", (req, res) => {
   });
 });
 
-router.get("/classroom", loginRedirectAuth, (req, res) => {
+router.get("/classroom", loginRedirectAuth, async (req, res) => {
   if (req.user?.role === "admin") return res.redirect("/admin");
+
+  const courseId = req.query.course || req.query.courseId;
+  if (courseId) {
+    try {
+      const sessionUser = await studentStore.resolveUserFromToken(req.user);
+      if (sessionUser) {
+        const enrollments = await studentStore.listEnrollmentsForUser(
+          sessionUser.id,
+        );
+        const match = enrollments.find(
+          (e) => String(e.course_id) === String(courseId),
+        );
+        if (!match) {
+          return res.redirect(`/register?course=${courseId}`);
+        }
+      }
+    } catch (err) {
+      console.warn(
+        "[views.js /classroom] check enrollment error:",
+        err.message,
+      );
+    }
+  }
+
   res.render("frontend/classroom", {
     title: "My Classroom | E-Tracks",
     description: "Your courses, lessons, and progress.",
@@ -276,13 +348,11 @@ router.get("/course/:id", loginRedirectAuth, async (req, res) => {
       .single();
 
     if (error || !data) {
-      return res
-        .status(404)
-        .render("404", {
-          title: "Course Not Found",
-          lang: "en",
-          pageScripts: [],
-        });
+      return res.status(404).render("404", {
+        title: "Course Not Found",
+        lang: "en",
+        pageScripts: [],
+      });
     }
 
     res.render("frontend/course_details", {
@@ -295,13 +365,11 @@ router.get("/course/:id", loginRedirectAuth, async (req, res) => {
     });
   } catch (error) {
     console.error("Course fetch error:", error);
-    res
-      .status(404)
-      .render("404", {
-        title: "Course Not Found",
-        lang: "en",
-        pageScripts: [],
-      });
+    res.status(404).render("404", {
+      title: "Course Not Found",
+      lang: "en",
+      pageScripts: [],
+    });
   }
 });
 

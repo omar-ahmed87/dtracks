@@ -1,5 +1,35 @@
 [
   {
+    "user_id": "9e334157-b92d-41a0-b465-69d92416c1de",
+    "course_id": 2,
+    "status": "active",
+    "progress": {
+      "completedLessons": [],
+      "quizCompleted": false,
+      "quizScore": 0
+    },
+    "enrolled_at": "2026-06-18T14:58:44.853Z",
+    "phone": "01015445555",
+    "applicant_name": "omar ahmed",
+    "applicant_email": "cresssoomar@gmail.com",
+    "form_data": {
+      "email": "cresssoomar@gmail.com",
+      "fullName": "omar ahmed",
+      "phone": "01015445555",
+      "courseId": 2,
+      "submittedAt": "2026-06-18T14:58:44.853Z",
+      "source": "course_registration_form",
+      "education_status": "graduate",
+      "college": "بابلابلا",
+      "department": "بلابلابل",
+      "level": "beginner",
+      "experience": "no",
+      "age": "25",
+      "gender": "male"
+    },
+    "id": "0ce8e8f6-4cab-4d9f-a386-823d75cf6ff0"
+  },
+  {
     "user_id": "ddca0ac1-6e68-4c4b-80c3-844cbe4286e8",
     "course_id": 2,
     "status": "active",

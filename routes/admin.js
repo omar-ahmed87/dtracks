@@ -7,6 +7,7 @@ const supabase = require('../supabaseClient');
 const studentStore = require('../lib/studentStore');
 const notificationsStore = require('../lib/notificationsStore');
 const { getLocalPhone } = require('../lib/phone');
+const courseContentStore = require('../lib/courseContentStore');
 
 const router = express.Router();
 
@@ -211,6 +212,59 @@ router.post('/enrollments/:id/approve', authenticateJWT, requireAdmin, async (re
   }
 });
 
+router.post('/enrollments/create', authenticateJWT, requireAdmin, async (req, res, next) => {
+  try {
+    const { userId, courseId, phone, status } = req.body || {};
+    if (!userId || !courseId) {
+      return res.status(400).json({ error: 'Student and Course are required' });
+    }
+
+    const course = await studentStore.getApprovedCourse(courseId);
+    if (!course) return res.status(404).json({ error: 'Course not found' });
+
+    const { data: user, error: userErr } = await supabase
+      .from('users')
+      .select('id, email, name, phone')
+      .eq('id', userId)
+      .maybeSingle();
+
+    if (userErr || !user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    const phoneVal = phone || user.phone || '—';
+    const enrollStatus = status || 'active';
+
+    const result = await studentStore.enrollUser(userId, courseId, enrollStatus, {
+      phone: phoneVal,
+      applicantName: user.name,
+      email: user.email,
+      formData: {
+        source: 'admin_manual_enrollment',
+        phone: phoneVal,
+        education_status: 'Student',
+        college: 'Manual Entry',
+        department: 'Manual Entry',
+        level: 'Beginner',
+        experience: 'No',
+        age: '—',
+        gender: '—',
+      }
+    });
+
+    if (result.error) {
+      return res.status(400).json({ error: result.error });
+    }
+
+    res.status(201).json({
+      message: 'Enrollment created successfully',
+      enrollment: result.enrollment
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
 router.post('/enrollments/:id/reject', authenticateJWT, requireAdmin, async (req, res, next) => {
   try {
     const leadId = req.params.id;
@@ -218,6 +272,24 @@ router.post('/enrollments/:id/reject', authenticateJWT, requireAdmin, async (req
 
     res.json({
       message: 'Enrollment request rejected successfully',
+      enrollment: result.enrollment,
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.post('/enrollments/:id/status', authenticateJWT, requireAdmin, async (req, res, next) => {
+  try {
+    const leadId = req.params.id;
+    const { status } = req.body || {};
+    if (!status) return res.status(400).json({ error: 'Status is required' });
+    
+    // Map 'rejected' input to 'cancelled' status if using Supabase standard, but studentStore.updateEnrollmentStatus handles it
+    const result = await studentStore.updateEnrollmentStatus(leadId, status);
+
+    res.json({
+      message: `Enrollment status updated to ${status}`,
       enrollment: result.enrollment,
     });
   } catch (err) {
@@ -357,13 +429,22 @@ router.delete('/users/:id', authenticateJWT, requireAdmin, async (req, res, next
   if (!id) return res.status(400).json({ error: 'Invalid user ID' });
 
   try {
+    // Delete related enrollments first
+    const { error: enrollErr } = await supabase
+      .from('enrollments')
+      .delete()
+      .eq('user_id', id);
+    if (enrollErr && !isMissingTableError(enrollErr)) {
+      console.warn('[admin delete] enrollment delete error:', enrollErr.message);
+    }
+
+    // Delete the user
     const { error } = await supabase
       .from('users')
       .delete()
       .eq('id', id);
-
     if (error) return next(error);
-    res.json({ message: 'User deleted' });
+    res.json({ message: 'User and related enrollments deleted' });
   } catch (err) {
     next(err);
   }
@@ -438,6 +519,28 @@ router.get('/courses/:id', authenticateJWT, requireAdmin, async (req, res, next)
     if (!data) return res.status(404).json({ error: 'Course not found' });
     data.name = data.title;
     res.json({ course: data });
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.get('/courses/:id/syllabus', authenticateJWT, requireAdmin, async (req, res, next) => {
+  const id = getId(req);
+  if (!id) return res.status(400).json({ error: 'Invalid course ID' });
+  try {
+    const syllabus = await courseContentStore.getSyllabus(id);
+    res.json({ success: true, syllabus });
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.post('/courses/:id/syllabus', authenticateJWT, requireAdmin, async (req, res, next) => {
+  const id = getId(req);
+  if (!id) return res.status(400).json({ error: 'Invalid course ID' });
+  try {
+    const updated = await courseContentStore.saveSyllabus(id, req.body.syllabus);
+    res.json({ success: true, syllabus: updated });
   } catch (err) {
     next(err);
   }

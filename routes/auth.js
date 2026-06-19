@@ -335,39 +335,53 @@ router.post("/register", validateUserPayload, async (req, res, next) => {
 /** Course registration form only — does not fail if email already exists */
 router.post(
   "/enroll-course",
-  optionalAuthenticateJWT,
+  authenticateJWT,
   async (req, res, next) => {
     try {
-      const email = (req.body?.email || "").trim().toLowerCase();
-      const fullName = (req.body?.fullName || req.body?.username || "").trim();
       const phoneRaw = String(req.body?.phone || "").trim();
       const courseId = req.body?.courseId || req.body?.course;
+      const education_status = req.body?.education_status;
+      const college = req.body?.college;
+      const department = req.body?.department;
+      const level = req.body?.level;
+      const experience = req.body?.experience;
+      const age = req.body?.age;
+      const gender = req.body?.gender;
 
-      if (!email) return res.status(400).json({ error: "Email is required" });
-      if (!fullName)
-        return res.status(400).json({ error: "Full name is required" });
-      if (!phoneRaw)
-        return res.status(400).json({ error: "Phone is required" });
-      if (!courseId)
-        return res.status(400).json({ error: "Please select a course" });
+      if (!phoneRaw) return res.status(400).json({ error: "Phone is required" });
+      if (!courseId) return res.status(400).json({ error: "Please select a course" });
+      if (!education_status || !college || !department || !level || !experience || !age || !gender) {
+        return res.status(400).json({ error: "All required fields must be filled" });
+      }
 
       let forceUserId = null;
       if (req.user?.sub) {
         try {
-        const sessionUser = await studentStore.resolveUserFromToken(req.user);
+          const sessionUser = await studentStore.resolveUserFromToken(req.user);
           if (sessionUser) forceUserId = sessionUser.id;
         } catch {
           /* continue without session link */
         }
       }
 
+      if (!forceUserId) {
+        return res.status(401).json({ error: "Session expired. Please sign in again." });
+      }
+
       const result = await studentStore.submitCourseEnrollment({
-        email,
-        fullName,
         phone: phoneRaw,
         courseId,
         req,
         forceUserId,
+        extraInfo: {
+          education_status,
+          college,
+          department,
+          level,
+          experience,
+          age,
+          gender
+        }
       });
 
       if (result.error) {

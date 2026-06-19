@@ -223,6 +223,10 @@ window.switchAdminView = async (viewId, triggerItem) => {
   // Load view-specific data
   if (viewId === "view-students") {
     await renderEnrollmentsView();
+  } else if (viewId === "view-approved-students") {
+    await renderApprovedStudentsView();
+  } else if (viewId === "view-content-management") {
+    await renderContentManagementView();
   } else if (viewId === "view-accounts") {
     await renderAccountsView();
   } else if (viewId === "view-manage-courses") {
@@ -292,13 +296,29 @@ async function renderEnrolledStudentsOverview() {
         <td><span class="lms-status-badge ${statusClass}">${s.status}</span></td>
         <td style="font-size:13px;color:var(--text-muted);">${s.enrolledAt ? new Date(s.enrolledAt).toLocaleString() : '—'}</td>
         <td style="text-align:right;">
-          ${
-            canMessage
-              ? `<button class="btn btn-outline btn-sm" data-action="open-message-student"
-                  data-email="${s.email}" data-name="${s.name}"
-                  data-user-id="${s.userId}" data-course-id="${s.courseId}">Message</button>`
-              : '<span style="font-size:12px;color:var(--text-muted);">Approve first</span>'
-          }
+          <div style="display:flex; gap:8px; justify-content:flex-end; align-items:center;">
+            <button class="btn btn-outline btn-sm" data-action="toggle-details" data-id="${s.id}">Details</button>
+            ${
+              canMessage
+                ? `<button class="btn btn-outline btn-sm" data-action="open-message-student"
+                    data-email="${s.email}" data-name="${s.name}"
+                    data-user-id="${s.userId}" data-course-id="${s.courseId}">Message</button>`
+                : '<span style="font-size:12px;color:var(--text-muted);">Approve first</span>'
+            }
+          </div>
+        </td>
+      </tr>
+      <tr class="lead-details-row" id="details-${s.id}" style="display:none; background: rgba(255,255,255,0.015);">
+        <td colspan="6" style="padding: 16px 24px; border-bottom: 1px solid var(--glass-border);">
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px; font-size: 13px; text-align: left;">
+            <div><strong style="color:var(--admin-primary)">Status:</strong> ${s.formData?.education_status || '—'}</div>
+            <div><strong style="color:var(--admin-primary)">College:</strong> ${s.formData?.college || '—'}</div>
+            <div><strong style="color:var(--admin-primary)">Department:</strong> ${s.formData?.department || '—'}</div>
+            <div><strong style="color:var(--admin-primary)">Level:</strong> ${s.formData?.level || '—'}</div>
+            <div><strong style="color:var(--admin-primary)">Prior Experience:</strong> ${s.formData?.experience || '—'}</div>
+            <div><strong style="color:var(--admin-primary)">Age:</strong> ${s.formData?.age || '—'}</div>
+            <div><strong style="color:var(--admin-primary)">Gender:</strong> ${s.formData?.gender || '—'}</div>
+          </div>
         </td>
       </tr>`;
       })
@@ -469,10 +489,24 @@ async function renderEnrollmentsView() {
         <td><span class="badge badge-primary">${lead.courseTitle}</span></td>
         <td style="font-size:13px;color:var(--text-muted);">${lead.enrolledAt ? new Date(lead.enrolledAt).toLocaleString() : '—'}</td>
         <td style="text-align: right;">
-           <div style="display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;">
+           <div style="display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;align-items:center;">
+             <button class="btn btn-outline btn-sm" data-action="toggle-details" data-id="${lead.id}">Details</button>
              <button class="btn btn-primary btn-sm" data-action="approve-enrollment" data-id="${lead.id}" data-user-id="${lead.userId || ''}" data-course-id="${lead.courseId || ''}">Approve</button>
              <button class="btn btn-outline btn-sm" data-action="reject-enrollment" data-id="${lead.id}" style="color:#ef4444;border-color:#ef4444;background:transparent;">Reject</button>
            </div>
+        </td>
+      </tr>
+      <tr class="lead-details-row" id="details-${lead.id}" style="display:none; background: rgba(255,255,255,0.015);">
+        <td colspan="6" style="padding: 16px 24px; border-bottom: 1px solid var(--glass-border);">
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px; font-size: 13px; text-align: left;">
+            <div><strong style="color:var(--admin-primary)">Status:</strong> ${lead.formData?.education_status || '—'}</div>
+            <div><strong style="color:var(--admin-primary)">College:</strong> ${lead.formData?.college || '—'}</div>
+            <div><strong style="color:var(--admin-primary)">Department:</strong> ${lead.formData?.department || '—'}</div>
+            <div><strong style="color:var(--admin-primary)">Level:</strong> ${lead.formData?.level || '—'}</div>
+            <div><strong style="color:var(--admin-primary)">Prior Experience:</strong> ${lead.formData?.experience || '—'}</div>
+            <div><strong style="color:var(--admin-primary)">Age:</strong> ${lead.formData?.age || '—'}</div>
+            <div><strong style="color:var(--admin-primary)">Gender:</strong> ${lead.formData?.gender || '—'}</div>
+          </div>
         </td>
       </tr>
     `).join('') || '<tr><td colspan="6" style="text-align:center;padding:40px;">No pending enrollments.</td></tr>';
@@ -639,6 +673,13 @@ document.addEventListener('click', async (e) => {
   const id = action.dataset.id;
 
   switch (actionType) {
+    case 'toggle-details': {
+      const detailsRow = document.getElementById(`details-${id}`);
+      if (detailsRow) {
+        detailsRow.style.display = detailsRow.style.display === 'none' ? 'table-row' : 'none';
+      }
+      break;
+    }
     case 'toggle-menu':
       const collapse = document.getElementById('adminSidebarCollapse');
       const toggleBtn = document.querySelector('.admin-mobile-toggle');
@@ -660,9 +701,14 @@ document.addEventListener('click', async (e) => {
       const targetModalId = action.dataset.target || 'courseModal';
       if (targetModalId === 'courseModal' && !id) {
         window.openAddModal();
+      } else if (targetModalId === 'enrollmentModal') {
+        await window.openEnrollmentModal();
       } else {
         window.openModal(targetModalId);
       }
+      break;
+    case 'save-enrollment-manual':
+      await window.saveEnrollmentManual();
       break;
     case 'close-modal':
       window.closeModal(action.dataset.target || 'courseModal');
@@ -761,6 +807,66 @@ document.addEventListener('click', async (e) => {
   }
 });
 // ── Modals & Actions ───────────────────────────────────────────
+
+window.openEnrollmentModal = async () => {
+  const modal = document.getElementById('enrollmentModal');
+  if (!modal) return;
+
+  const studentSelect = document.getElementById('enroll-student-select');
+  const courseSelect = document.getElementById('enroll-course-select');
+  
+  if (studentSelect) {
+    studentSelect.innerHTML = '<option value="">Loading students...</option>';
+    try {
+      const res = await apiRequest('/users');
+      const users = (res.users || []).filter(u => u.role === 'user');
+      studentSelect.innerHTML = '<option value="">Choose student...</option>' + 
+        users.map(u => `<option value="${u.id}">${u.username || 'User'} (${u.email})</option>`).join('');
+    } catch (err) {
+      studentSelect.innerHTML = '<option value="">Error loading students</option>';
+    }
+  }
+
+  if (courseSelect) {
+    courseSelect.innerHTML = '<option value="">Loading courses...</option>';
+    try {
+      const res = await apiRequest('/courses');
+      const approved = (res.courses || []).filter(c => c.status === 'approved');
+      courseSelect.innerHTML = '<option value="">Choose course...</option>' + 
+        approved.map(c => `<option value="${c.id}">${c.name || c.title}</option>`).join('');
+    } catch (err) {
+      courseSelect.innerHTML = '<option value="">Error loading courses</option>';
+    }
+  }
+
+  modal.classList.add('active');
+};
+
+window.saveEnrollmentManual = async () => {
+  const userId = document.getElementById('enroll-student-select')?.value;
+  const courseId = document.getElementById('enroll-course-select')?.value;
+  const phone = document.getElementById('enroll-phone')?.value || '';
+  const status = document.getElementById('enroll-status')?.value || 'active';
+
+  if (!userId || !courseId) {
+    showToast('Please select a student and a course', 'error');
+    return;
+  }
+
+  try {
+    showToast('Creating enrollment...', 'info');
+    await apiRequest('/enrollments/create', {
+      method: 'POST',
+      body: JSON.stringify({ userId, courseId, phone, status })
+    });
+    showToast('Enrollment created successfully!', 'success');
+    window.closeModal('enrollmentModal');
+    await renderEnrollmentsView();
+    await renderEnrolledStudentsOverview();
+  } catch (err) {
+    showToast('Failed to create enrollment: ' + err.message, 'error');
+  }
+};
 
 window.openEditUserModal = async (id) => {
   try {
@@ -1160,6 +1266,667 @@ document.addEventListener('DOMContentLoaded', () => {
         showToast('Quick backup failed: ' + err.message, 'error');
       }
     });
+  }
+});
+
+// ─── Students Registry Logic ───
+let studentsRegistryData = [];
+
+window.renderApprovedStudentsView = async () => {
+  const tbody = document.getElementById('students-registry-tbody');
+  if (tbody) {
+    tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:40px;"><span class="material-symbols-rounded spinning">sync</span> Loading students registry...</td></tr>';
+  }
+  try {
+    const res = await apiRequest('/enrolled-students');
+    studentsRegistryData = res.students || [];
+
+    // Hydrate course filter options if empty
+    const courseFilter = document.getElementById('students-course-filter');
+    if (courseFilter && courseFilter.options.length <= 1) {
+      const courses = adminData.courses || [];
+      courses.forEach(c => {
+        const opt = document.createElement('option');
+        opt.value = c.id;
+        opt.textContent = c.name || c.title;
+        courseFilter.appendChild(opt);
+      });
+    }
+
+    applyStudentsRegistryFilters();
+  } catch (err) {
+    showToast('Failed to load students registry: ' + err.message, 'error');
+    if (tbody) tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:40px;color:red;">Error loading registry</td></tr>';
+  }
+};
+
+function applyStudentsRegistryFilters() {
+  const searchVal = document.getElementById('students-search')?.value.trim().toLowerCase() || '';
+  const courseVal = document.getElementById('students-course-filter')?.value || '';
+  const statusVal = document.getElementById('students-status-filter')?.value || '';
+  const sortVal = document.getElementById('students-sort')?.value || 'date-desc';
+
+  let filtered = studentsRegistryData.filter(s => {
+    const nameMatch = s.name?.toLowerCase().includes(searchVal) || false;
+    const emailMatch = s.email?.toLowerCase().includes(searchVal) || false;
+    const searchMatch = !searchVal || nameMatch || emailMatch;
+
+    const courseMatch = !courseVal || String(s.courseId) === String(courseVal);
+    
+    // Normalize statuses for uniform comparisons
+    const sStatus = String(s.status || '').trim().toLowerCase();
+    let statusMatch = true;
+    if (statusVal === 'active') {
+      statusMatch = (sStatus === 'active' || sStatus === 'approved');
+    } else if (statusVal === 'pending') {
+      statusMatch = (sStatus === 'pending');
+    } else if (statusVal === 'rejected') {
+      statusMatch = (sStatus === 'rejected' || sStatus === 'cancelled');
+    }
+
+    return searchMatch && courseMatch && statusMatch;
+  });
+
+  // Sorting
+  filtered.sort((a, b) => {
+    if (sortVal === 'date-desc') {
+      return new Date(b.enrolledAt) - new Date(a.enrolledAt);
+    } else if (sortVal === 'date-asc') {
+      return new Date(a.enrolledAt) - new Date(b.enrolledAt);
+    } else if (sortVal === 'name-asc') {
+      return a.name.localeCompare(b.name);
+    } else if (sortVal === 'name-desc') {
+      return b.name.localeCompare(a.name);
+    }
+    return 0;
+  });
+
+  renderApprovedStudentsTable(filtered);
+}
+
+function renderApprovedStudentsTable(students) {
+  const tbody = document.getElementById('students-registry-tbody');
+  if (!tbody) return;
+
+  if (students.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:40px;color:var(--text-muted);">No matching students found</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = students.map(s => {
+    const dateStr = s.enrolledAt ? new Date(s.enrolledAt).toLocaleDateString() : '—';
+    const statusClass = (s.status === 'active' || s.status === 'approved') ? 'status-approved' : (s.status === 'rejected' || s.status === 'cancelled') ? 'status-rejected' : 'status-pending';
+    const statusText = (s.status === 'active' || s.status === 'approved') ? 'Active' : (s.status === 'rejected' || s.status === 'cancelled') ? 'Rejected' : 'Pending';
+
+    // Form details
+    const education = s.formData?.education_status || '—';
+    const college = s.formData?.college || '—';
+    const department = s.formData?.department || '—';
+    const level = s.formData?.level || '—';
+    const age = s.formData?.age || '—';
+    const gender = s.formData?.gender || '—';
+
+    return `
+      <tr>
+        <td>
+          <div style="font-weight: 600;">${s.name}</div>
+          <div style="font-size: 12px; color: var(--text-muted);">${s.email}</div>
+        </td>
+        <td>${s.courseTitle}</td>
+        <td><span class="badge" style="background: rgba(99,102,241,0.1); color: #6366f1;">${education}</span></td>
+        <td>
+          <div>${college}</div>
+          <div style="font-size: 11px; color: var(--text-muted);">${department}</div>
+        </td>
+        <td>${level}</td>
+        <td>${age} / ${gender}</td>
+        <td>${dateStr}</td>
+        <td><span class="badge ${statusClass}">${statusText}</span></td>
+        <td style="text-align: right;">
+          <div class="action-btns" style="justify-content: flex-end; gap: 8px;">
+            <button class="btn btn-outline btn-xs" data-action="view-student-details" data-id="${s.id}" title="View Profile Details">
+              <span class="material-symbols-rounded" style="font-size: 16px;">visibility</span> Details
+            </button>
+            ${(s.status !== 'active' && s.status !== 'approved') ? `
+              <button class="btn-icon-sm" style="color: #10b981;" data-action="change-enrollment-status" data-id="${s.id}" data-status="active" title="Approve Student">
+                <span class="material-symbols-rounded">check_circle</span>
+              </button>
+            ` : ''}
+            ${s.status !== 'pending' ? `
+              <button class="btn-icon-sm" style="color: #f59e0b;" data-action="change-enrollment-status" data-id="${s.id}" data-status="pending" title="Mark Pending/Wait">
+                <span class="material-symbols-rounded">pause_circle</span>
+              </button>
+            ` : ''}
+            ${(s.status !== 'rejected' && s.status !== 'cancelled') ? `
+              <button class="btn-icon-sm" style="color: #ef4444;" data-action="change-enrollment-status" data-id="${s.id}" data-status="rejected" title="Reject Student">
+                <span class="material-symbols-rounded">cancel</span>
+              </button>
+            ` : ''}
+          </div>
+        </td>
+      </tr>
+    `;
+  }).join('');
+}
+
+window.openStudentDetailsModal = (enrollmentId) => {
+  const modal = document.getElementById('studentDetailsModal');
+  const body = document.getElementById('student-details-body');
+  if (!modal || !body) return;
+
+  const student = studentsRegistryData.find(s => String(s.id) === String(enrollmentId));
+  if (!student) return showToast('Student details not found', 'error');
+
+  const dateStr = student.enrolledAt ? new Date(student.enrolledAt).toLocaleString() : '—';
+  const statusClass = (student.status === 'active' || student.status === 'approved') ? 'status-approved' : (student.status === 'rejected' || student.status === 'cancelled') ? 'status-rejected' : 'status-pending';
+  const statusText = (student.status === 'active' || student.status === 'approved') ? 'Active / Approved' : (student.status === 'rejected' || student.status === 'cancelled') ? 'Rejected' : 'Pending Approval';
+
+  body.innerHTML = `
+    <div style="display: flex; flex-direction: column; gap: 20px;">
+      <!-- Profile Header -->
+      <div style="display: flex; align-items: center; gap: 16px; padding-bottom: 16px; border-bottom: 1px solid var(--glass-border);">
+        <div style="width: 50px; height: 50px; border-radius: 50%; background: var(--primary); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 700;">
+          ${student.name.charAt(0).toUpperCase()}
+        </div>
+        <div>
+          <h4 style="margin: 0; font-size: 18px; color: var(--text-color);">${student.name}</h4>
+          <p style="margin: 4px 0 0; font-size: 14px; color: var(--text-muted);">${student.email}</p>
+        </div>
+      </div>
+
+      <div class="admin-grid-cols-2" style="gap: 16px;">
+        <!-- Account Info -->
+        <div class="admin-card" style="padding: 12px; background: rgba(255,255,255,0.02);">
+          <h5 style="margin: 0 0 10px; color: var(--primary); font-size: 13px;">ACCOUNT INFO</h5>
+          <p style="margin: 4px 0; font-size: 13px;"><strong>Phone:</strong> ${student.phone || '—'}</p>
+          <p style="margin: 4px 0; font-size: 13px;"><strong>User ID:</strong> ${student.userId || '—'}</p>
+        </div>
+
+        <!-- Registration Info -->
+        <div class="admin-card" style="padding: 12px; background: rgba(255,255,255,0.02);">
+          <h5 style="margin: 0 0 10px; color: var(--primary); font-size: 13px;">REGISTRATION INFO</h5>
+          <p style="margin: 4px 0; font-size: 13px;"><strong>Course:</strong> ${student.courseTitle}</p>
+          <p style="margin: 4px 0; font-size: 13px;"><strong>Enrolled At:</strong> ${dateStr}</p>
+          <p style="margin: 4px 0; font-size: 13px;"><strong>Status:</strong> <span class="badge ${statusClass}">${statusText}</span></p>
+        </div>
+
+        <!-- Educational Details -->
+        <div class="admin-card" style="padding: 12px; background: rgba(255,255,255,0.02);">
+          <h5 style="margin: 0 0 10px; color: var(--primary); font-size: 13px;">EDUCATIONAL DATA</h5>
+          <p style="margin: 4px 0; font-size: 13px;"><strong>Status:</strong> ${student.formData?.education_status || '—'}</p>
+          <p style="margin: 4px 0; font-size: 13px;"><strong>College:</strong> ${student.formData?.college || '—'}</p>
+          <p style="margin: 4px 0; font-size: 13px;"><strong>Department:</strong> ${student.formData?.department || '—'}</p>
+          <p style="margin: 4px 0; font-size: 13px;"><strong>Level:</strong> ${student.formData?.level || '—'}</p>
+          <p style="margin: 4px 0; font-size: 13px;"><strong>Prior Experience:</strong> ${student.formData?.experience || '—'}</p>
+        </div>
+
+        <!-- Personal Info -->
+        <div class="admin-card" style="padding: 12px; background: rgba(255,255,255,0.02);">
+          <h5 style="margin: 0 0 10px; color: var(--primary); font-size: 13px;">PERSONAL DATA</h5>
+          <p style="margin: 4px 0; font-size: 13px;"><strong>Age:</strong> ${student.formData?.age || '—'}</p>
+          <p style="margin: 4px 0; font-size: 13px;"><strong>Gender:</strong> ${student.formData?.gender || '—'}</p>
+        </div>
+      </div>
+    </div>
+  `;
+
+  modal.classList.add('active');
+};
+
+async function changeStudentEnrollmentStatus(enrollmentId, newStatus) {
+  showToast('Updating student status...', 'info');
+  try {
+    const res = await apiRequest(`/enrollments/${enrollmentId}/status`, {
+      method: 'POST',
+      body: JSON.stringify({ status: newStatus })
+    });
+    
+    // Update local cache
+    studentsRegistryData = studentsRegistryData.map(s => {
+      if (String(s.id) === String(enrollmentId)) {
+        return { ...s, status: newStatus };
+      }
+      return s;
+    });
+
+    applyStudentsRegistryFilters();
+    showToast(`Student status successfully updated to ${newStatus}`, 'success');
+  } catch (err) {
+    showToast('Failed to update status: ' + err.message, 'error');
+  }
+}
+
+// ─── Content Management (CMS) Logic ───
+let activeCmsCourseId = null;
+let activeCmsSyllabus = { modules: [] };
+
+window.renderContentManagementView = async () => {
+  const select = document.getElementById('cms-course-select');
+  if (select && select.options.length <= 1) {
+    const courses = adminData.courses || [];
+    select.innerHTML = '<option value="">Select a course…</option>' +
+      courses.map(c => `<option value="${c.id}">${c.name || c.title}</option>`).join('');
+  }
+};
+
+async function loadCmsSyllabus(courseId) {
+  activeCmsCourseId = courseId;
+  const wrapper = document.getElementById('cms-syllabus-wrapper');
+  const emptyState = document.getElementById('cms-empty-state');
+  const title = document.getElementById('cms-course-title');
+
+  if (!courseId) {
+    if (wrapper) wrapper.style.display = 'none';
+    if (emptyState) emptyState.style.display = 'block';
+    return;
+  }
+
+  if (emptyState) emptyState.style.display = 'none';
+  if (wrapper) wrapper.style.display = 'block';
+
+  const selectedCourse = adminData.courses.find(c => String(c.id) === String(courseId));
+  if (title && selectedCourse) {
+    title.textContent = `${selectedCourse.name || selectedCourse.title} Syllabus`;
+  }
+
+  const listEl = document.getElementById('cms-modules-list');
+  if (listEl) {
+    listEl.innerHTML = '<div style="text-align:center;padding:30px;"><span class="material-symbols-rounded spinning">sync</span> Loading syllabus...</div>';
+  }
+
+  try {
+    const res = await apiRequest(`/courses/${courseId}/syllabus`);
+    activeCmsSyllabus = res.syllabus || { modules: [] };
+    if (!activeCmsSyllabus.modules) activeCmsSyllabus.modules = [];
+    renderCmsSyllabus();
+  } catch (err) {
+    showToast('Failed to load syllabus: ' + err.message, 'error');
+  }
+}
+
+function renderCmsSyllabus() {
+  const listEl = document.getElementById('cms-modules-list');
+  if (!listEl) return;
+
+  if (activeCmsSyllabus.modules.length === 0) {
+    listEl.innerHTML = '<div style="text-align:center;padding:30px;color:var(--text-muted);">This course has no modules yet. Click "Add Module" to start.</div>';
+    return;
+  }
+
+  listEl.innerHTML = activeCmsSyllabus.modules.map((mod, modIdx) => {
+    const lessons = mod.lessons || [];
+
+    const lessonsHtml = lessons.map((les, lesIdx) => {
+      const typeIcon = les.type === 'quiz' ? 'quiz' : les.type === 'project' ? 'task' : les.type === 'pdf' ? 'picture_as_pdf' : les.type === 'code' ? 'code' : les.type === 'link' ? 'link' : 'play_circle';
+      const visibleIcon = les.visible !== false ? 'visibility' : 'visibility_off';
+      const visibleColor = les.visible !== false ? 'var(--primary)' : 'var(--text-muted)';
+      const publishIcon = les.published !== false ? 'cloud_done' : 'cloud_off';
+      const publishColor = les.published !== false ? '#10b981' : 'var(--text-muted)';
+
+      return `
+        <div class="cms-lesson-card" style="display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; background: rgba(255,255,255,0.015); border: 1px solid var(--glass-border); border-radius: var(--radius-sm); gap: 12px;">
+          <div style="display: flex; align-items: center; gap: 12px; flex: 1;">
+            <span class="material-symbols-rounded" style="color: var(--primary);">${typeIcon}</span>
+            <div>
+              <div style="font-weight: 500; font-size: 14px;">${les.title} <span style="color: var(--text-muted); font-size: 11px;">/ ${les.titleAr || les.title}</span></div>
+              <div style="font-size: 12px; color: var(--text-muted);">${les.duration || '—'} | Type: ${les.type}</div>
+            </div>
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <button class="btn-icon-sm" style="color: ${publishColor};" data-action="cms-toggle-publish" data-module-index="${modIdx}" data-index="${lesIdx}" title="Toggle Published State">
+              <span class="material-symbols-rounded" style="font-size: 18px;">${publishIcon}</span>
+            </button>
+            <button class="btn-icon-sm" style="color: ${visibleColor};" data-action="cms-toggle-visible" data-module-index="${modIdx}" data-index="${lesIdx}" title="Toggle Student Visibility">
+              <span class="material-symbols-rounded" style="font-size: 18px;">${visibleIcon}</span>
+            </button>
+            <button class="btn-icon-sm" style="color: var(--text-muted);" data-action="cms-move-lesson" data-module-index="${modIdx}" data-index="${lesIdx}" data-dir="up" title="Move Up" ${lesIdx === 0 ? 'disabled style="opacity:0.3;"' : ''}>
+              <span class="material-symbols-rounded" style="font-size: 18px;">arrow_upward</span>
+            </button>
+            <button class="btn-icon-sm" style="color: var(--text-muted);" data-action="cms-move-lesson" data-module-index="${modIdx}" data-index="${lesIdx}" data-dir="down" title="Move Down" ${lesIdx === lessons.length - 1 ? 'disabled style="opacity:0.3;"' : ''}>
+              <span class="material-symbols-rounded" style="font-size: 18px;">arrow_downward</span>
+            </button>
+            <button class="btn-icon-sm" style="color: var(--primary);" data-action="cms-edit-lesson" data-module-index="${modIdx}" data-index="${lesIdx}" title="Edit Lesson">
+              <span class="material-symbols-rounded" style="font-size: 18px;">edit</span>
+            </button>
+            <button class="btn-icon-sm" style="color: #ef4444;" data-action="cms-delete-lesson" data-module-index="${modIdx}" data-index="${lesIdx}" title="Delete Lesson">
+              <span class="material-symbols-rounded" style="font-size: 18px;">delete</span>
+            </button>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    return `
+      <div class="cms-module-card" style="border: 1px solid var(--glass-border); border-radius: var(--radius-md); background: rgba(255,255,255,0.01); overflow: hidden;">
+        <div class="cms-module-header" style="display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; background: rgba(255,255,255,0.02); border-bottom: 1px solid var(--glass-border); gap: 16px; flex-wrap: wrap;">
+          <div style="flex: 1;">
+            <h3 style="margin: 0; font-size: 16px; color: var(--text-color);">${mod.title}</h3>
+            <span style="color: var(--text-muted); font-size: 12px;">${mod.titleAr || mod.title} | ${mod.time || 'No duration info'}</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <button class="btn btn-outline btn-xs" data-action="cms-add-lesson" data-module-index="${modIdx}">
+              <span class="material-symbols-rounded" style="font-size: 16px;">add</span> Add Lesson
+            </button>
+            <button class="btn-icon-sm" style="color: var(--text-muted);" data-action="cms-move-module" data-index="${modIdx}" data-dir="up" title="Move Module Up" ${modIdx === 0 ? 'disabled style="opacity:0.3;"' : ''}>
+              <span class="material-symbols-rounded" style="font-size: 18px;">arrow_upward</span>
+            </button>
+            <button class="btn-icon-sm" style="color: var(--text-muted);" data-action="cms-move-module" data-index="${modIdx}" data-dir="down" title="Move Module Down" ${modIdx === activeCmsSyllabus.modules.length - 1 ? 'disabled style="opacity:0.3;"' : ''}>
+              <span class="material-symbols-rounded" style="font-size: 18px;">arrow_downward</span>
+            </button>
+            <button class="btn-icon-sm" style="color: var(--primary);" data-action="cms-edit-module" data-index="${modIdx}" title="Edit Module">
+              <span class="material-symbols-rounded" style="font-size: 18px;">edit</span>
+            </button>
+            <button class="btn-icon-sm" style="color: #ef4444;" data-action="cms-delete-module" data-index="${modIdx}" title="Delete Module">
+              <span class="material-symbols-rounded" style="font-size: 18px;">delete</span>
+            </button>
+          </div>
+        </div>
+        <div class="cms-module-body" style="padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+          ${lessonsHtml || '<div style="text-align:center;padding:12px;color:var(--text-muted);font-size:13px;">No lessons in this module.</div>'}
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+// Module CRUD Modals
+window.openCmsModuleModal = (index = '') => {
+  const modal = document.getElementById('cmsModuleModal');
+  const titleEl = document.getElementById('cms-module-modal-title');
+  const indexInput = document.getElementById('cms-module-index');
+  const titleEnInput = document.getElementById('cms-module-title-en');
+  const titleArInput = document.getElementById('cms-module-title-ar');
+  const timeInput = document.getElementById('cms-module-time');
+
+  if (!modal) return;
+
+  indexInput.value = index;
+
+  if (index !== '') {
+    titleEl.textContent = 'Edit Syllabus Module';
+    const mod = activeCmsSyllabus.modules[index];
+    titleEnInput.value = mod.title || '';
+    titleArInput.value = mod.titleAr || '';
+    timeInput.value = mod.time || '';
+  } else {
+    titleEl.textContent = 'Add Syllabus Module';
+    titleEnInput.value = '';
+    titleArInput.value = '';
+    timeInput.value = '';
+  }
+
+  modal.classList.add('active');
+};
+
+async function saveCmsModule() {
+  const index = document.getElementById('cms-module-index').value;
+  const titleEn = document.getElementById('cms-module-title-en').value.trim();
+  const titleAr = document.getElementById('cms-module-title-ar').value.trim();
+  const time = document.getElementById('cms-module-time').value.trim();
+
+  if (!titleEn || !titleAr) return showToast('Please enter both English and Arabic module titles', 'error');
+
+  const modData = {
+    id: index !== '' ? activeCmsSyllabus.modules[index].id : 'm' + (activeCmsSyllabus.modules.length + 1),
+    title: titleEn,
+    titleAr: titleAr,
+    time: time || '45 Min',
+    lessons: index !== '' ? activeCmsSyllabus.modules[index].lessons : []
+  };
+
+  if (index !== '') {
+    activeCmsSyllabus.modules[index] = modData;
+  } else {
+    activeCmsSyllabus.modules.push(modData);
+  }
+
+  window.closeModal('cmsModuleModal');
+  renderCmsSyllabus();
+  await saveCmsSyllabusToServer();
+}
+
+async function deleteCmsModule(index) {
+  confirmAction('Are you sure you want to delete this module and all its lessons?', async () => {
+    activeCmsSyllabus.modules.splice(index, 1);
+    renderCmsSyllabus();
+    await saveCmsSyllabusToServer();
+  });
+}
+
+// Lesson CRUD Modals
+window.openCmsLessonModal = (moduleIndex, lessonIndex = '') => {
+  const modal = document.getElementById('cmsLessonModal');
+  const titleEl = document.getElementById('cms-lesson-modal-title');
+  const modIdxInput = document.getElementById('cms-lesson-module-index');
+  const lessonIdxInput = document.getElementById('cms-lesson-index');
+
+  const titleEnInput = document.getElementById('cms-lesson-title-en');
+  const titleArInput = document.getElementById('cms-lesson-title-ar');
+  const typeSelect = document.getElementById('cms-lesson-type');
+  const durationInput = document.getElementById('cms-lesson-duration');
+  const videoInput = document.getElementById('cms-lesson-video-url');
+  const attachmentInput = document.getElementById('cms-lesson-attachment');
+  const publishedCb = document.getElementById('cms-lesson-published');
+  const visibleCb = document.getElementById('cms-lesson-visible');
+
+  if (!modal) return;
+
+  modIdxInput.value = moduleIndex;
+  lessonIdxInput.value = lessonIndex;
+
+  if (lessonIndex !== '') {
+    titleEl.textContent = 'Edit Lesson';
+    const les = activeCmsSyllabus.modules[moduleIndex].lessons[lessonIndex];
+    titleEnInput.value = les.title || '';
+    titleArInput.value = les.titleAr || '';
+    typeSelect.value = les.type || 'video';
+    durationInput.value = les.duration || '';
+    videoInput.value = les.embedUrl || '';
+    attachmentInput.value = les.attachment || '';
+    publishedCb.checked = les.published !== false;
+    visibleCb.checked = les.visible !== false;
+  } else {
+    titleEl.textContent = 'Add Lesson';
+    titleEnInput.value = '';
+    titleArInput.value = '';
+    typeSelect.value = 'video';
+    durationInput.value = '';
+    videoInput.value = '';
+    attachmentInput.value = '';
+    publishedCb.checked = true;
+    visibleCb.checked = true;
+  }
+
+  modal.classList.add('active');
+};
+
+async function saveCmsLesson() {
+  const modIdx = document.getElementById('cms-lesson-module-index').value;
+  const lesIdx = document.getElementById('cms-lesson-index').value;
+
+  const titleEn = document.getElementById('cms-lesson-title-en').value.trim();
+  const titleAr = document.getElementById('cms-lesson-title-ar').value.trim();
+  const type = document.getElementById('cms-lesson-type').value;
+  const duration = document.getElementById('cms-lesson-duration').value.trim();
+  const embedUrl = document.getElementById('cms-lesson-video-url').value.trim();
+  const attachment = document.getElementById('cms-lesson-attachment').value.trim();
+  const published = document.getElementById('cms-lesson-published').checked;
+  const visible = document.getElementById('cms-lesson-visible').checked;
+
+  if (!titleEn || !titleAr) return showToast('Please enter both English and Arabic titles', 'error');
+
+  const lesData = {
+    id: lesIdx !== '' ? activeCmsSyllabus.modules[modIdx].lessons[lesIdx].id : 'l' + (activeCmsSyllabus.modules[modIdx].lessons.length + 1),
+    title: titleEn,
+    titleAr: titleAr,
+    type: type,
+    duration: duration || '10m',
+    embedUrl: embedUrl,
+    attachment: attachment,
+    published: published,
+    visible: visible,
+    completed: false
+  };
+
+  if (lesIdx !== '') {
+    activeCmsSyllabus.modules[modIdx].lessons[lesIdx] = lesData;
+  } else {
+    if (!activeCmsSyllabus.modules[modIdx].lessons) activeCmsSyllabus.modules[modIdx].lessons = [];
+    activeCmsSyllabus.modules[modIdx].lessons.push(lesData);
+  }
+
+  window.closeModal('cmsLessonModal');
+  renderCmsSyllabus();
+  await saveCmsSyllabusToServer();
+}
+
+async function deleteCmsLesson(modIdx, lesIdx) {
+  confirmAction('Are you sure you want to delete this lesson?', async () => {
+    activeCmsSyllabus.modules[modIdx].lessons.splice(lesIdx, 1);
+    renderCmsSyllabus();
+    await saveCmsSyllabusToServer();
+  });
+}
+
+// Reordering / publish state logic
+async function moveCmsModule(index, direction) {
+  const list = activeCmsSyllabus.modules;
+  const targetIndex = direction === 'up' ? index - 1 : index + 1;
+  if (targetIndex < 0 || targetIndex >= list.length) return;
+
+  const temp = list[index];
+  list[index] = list[targetIndex];
+  list[targetIndex] = temp;
+
+  renderCmsSyllabus();
+  await saveCmsSyllabusToServer();
+}
+
+async function moveCmsLesson(modIdx, index, direction) {
+  const list = activeCmsSyllabus.modules[modIdx].lessons;
+  const targetIndex = direction === 'up' ? index - 1 : index + 1;
+  if (targetIndex < 0 || targetIndex >= list.length) return;
+
+  const temp = list[index];
+  list[index] = list[targetIndex];
+  list[targetIndex] = temp;
+
+  renderCmsSyllabus();
+  await saveCmsSyllabusToServer();
+}
+
+async function toggleCmsLessonPublish(modIdx, lesIdx) {
+  const les = activeCmsSyllabus.modules[modIdx].lessons[lesIdx];
+  les.published = les.published === false;
+  renderCmsSyllabus();
+  await saveCmsSyllabusToServer();
+}
+
+async function toggleCmsLessonVisible(modIdx, lesIdx) {
+  const les = activeCmsSyllabus.modules[modIdx].lessons[lesIdx];
+  les.visible = les.visible === false;
+  renderCmsSyllabus();
+  await saveCmsSyllabusToServer();
+}
+
+async function saveCmsSyllabusToServer() {
+  showToast('Saving syllabus changes...', 'info');
+  try {
+    await apiRequest(`/courses/${activeCmsCourseId}/syllabus`, {
+      method: 'POST',
+      body: JSON.stringify({ syllabus: activeCmsSyllabus })
+    });
+    showToast('Syllabus saved successfully!', 'success');
+  } catch (err) {
+    showToast('Failed to save syllabus: ' + err.message, 'error');
+  }
+}
+
+// Extra Custom Event delegation and UI Bindings
+document.addEventListener('click', async (e) => {
+  const action = e.target.closest('[data-action]');
+  if (!action) return;
+
+  const act = action.dataset.action;
+  const id = action.dataset.id;
+  const modIdx = action.dataset.moduleIndex;
+  const idx = action.dataset.index;
+  const status = action.dataset.status;
+  const dir = action.dataset.dir;
+
+  switch (act) {
+    case 'view-student-details':
+      window.openStudentDetailsModal(id);
+      break;
+    case 'change-enrollment-status':
+      await changeStudentEnrollmentStatus(id, status);
+      break;
+    case 'cms-edit-module':
+      window.openCmsModuleModal(idx);
+      break;
+    case 'cms-delete-module':
+      await deleteCmsModule(idx);
+      break;
+    case 'cms-move-module':
+      await moveCmsModule(Number(idx), dir);
+      break;
+    case 'cms-add-lesson':
+      window.openCmsLessonModal(modIdx);
+      break;
+    case 'cms-edit-lesson':
+      window.openCmsLessonModal(modIdx, idx);
+      break;
+    case 'cms-delete-lesson':
+      await deleteCmsLesson(modIdx, idx);
+      break;
+    case 'cms-move-lesson':
+      await moveCmsLesson(Number(modIdx), Number(idx), dir);
+      break;
+    case 'cms-toggle-publish':
+      await toggleCmsLessonPublish(modIdx, idx);
+      break;
+    case 'cms-toggle-visible':
+      await toggleCmsLessonVisible(modIdx, idx);
+      break;
+  }
+});
+
+// Setup dynamic bindings for Student Filters & CMS Course dropdown changes
+document.addEventListener('DOMContentLoaded', () => {
+  const searchInput = document.getElementById('students-search');
+  if (searchInput) searchInput.addEventListener('input', applyStudentsRegistryFilters);
+
+  const courseFilter = document.getElementById('students-course-filter');
+  if (courseFilter) courseFilter.addEventListener('change', applyStudentsRegistryFilters);
+
+  const statusFilter = document.getElementById('students-status-filter');
+  if (statusFilter) statusFilter.addEventListener('change', applyStudentsRegistryFilters);
+
+  const sortSelect = document.getElementById('students-sort');
+  if (sortSelect) sortSelect.addEventListener('change', applyStudentsRegistryFilters);
+
+  const cmsCourseSelect = document.getElementById('cms-course-select');
+  if (cmsCourseSelect) {
+    cmsCourseSelect.addEventListener('change', () => {
+      loadCmsSyllabus(cmsCourseSelect.value);
+    });
+  }
+
+  const addModuleBtn = document.getElementById('btn-cms-add-module');
+  if (addModuleBtn) {
+    addModuleBtn.addEventListener('click', () => {
+      window.openCmsModuleModal();
+    });
+  }
+
+  const saveModuleBtn = document.getElementById('btn-cms-save-module');
+  if (saveModuleBtn) {
+    saveModuleBtn.addEventListener('click', saveCmsModule);
+  }
+
+  const saveLessonBtn = document.getElementById('btn-cms-save-lesson');
+  if (saveLessonBtn) {
+    saveLessonBtn.addEventListener('click', saveCmsLesson);
   }
 });
 

@@ -8,15 +8,35 @@
         <span data-i18n="hero_title_2">Prove Them.</span>
       </h1>
       <p data-i18n="hero_desc" class="hero-subtitle">
-        Project-based learning in tech, design, and languages. Build real-world skills and accelerate your career today.
+        Project-based learning in tech, design, and languages. Build real-world
+        skills and accelerate your career today.
       </p>
 
       <div class="hero-buttons hero-buttons-pair">
-        <a href="/register" class="btn btn-primary btn-lg hero-btn-main" style="text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 8px;">
+        <a
+          href="/register"
+          class="btn btn-primary btn-lg hero-btn-main"
+          style="
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+          "
+        >
           <span data-i18n="btn_get_started">Get Started</span>
           <span class="material-symbols-rounded">rocket_launch</span>
         </a>
-        <a href="#courses" class="btn btn-outline btn-lg hero-btn-secondary" style="text-decoration: none; display: inline-flex; align-items: center; justify-content: center;">
+        <a
+          href="#courses"
+          class="btn btn-outline btn-lg hero-btn-secondary"
+          style="
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+          "
+        >
           <span data-i18n="btn_browse_courses">Browse Courses</span>
         </a>
       </div>
@@ -24,15 +44,38 @@
       <div class="trust-stats-minimal">
         <div class="stat-pill">
           <span class="material-symbols-rounded star">star</span>
-          <span class="pill-text"><strong class="stat-pill-num" data-count="4.8" data-decimal="1">4.8</strong> <span data-i18n="stat_avg_rating">Average Rating</span></span>
+          <span class="pill-text"
+            ><strong class="stat-pill-num" data-count="4.8" data-decimal="1"
+              >4.8</strong
+            >
+            <span data-i18n="stat_avg_rating">Average Rating</span></span
+          >
         </div>
         <div class="stat-pill">
-          <span class="material-symbols-rounded" style="color: var(--primary)">group</span>
-          <span class="pill-text"><strong class="stat-pill-num" data-count="725" data-prefix="+">+725</strong> <span data-i18n="stat_students">Students</span></span>
+          <span class="material-symbols-rounded" style="color: var(--primary)"
+            >group</span
+          >
+          <span class="pill-text"
+            ><strong class="stat-pill-num" data-count="725" data-prefix="+"
+              >+725</strong
+            >
+            <span data-i18n="stat_students">Students</span></span
+          >
         </div>
         <div class="stat-pill">
-          <span class="material-symbols-rounded" style="color: var(--secondary)">library_books</span>
-          <span class="pill-text"><strong class="stat-pill-num" id="dynamic-course-count-pill" data-count="5" data-prefix="+">+5</strong> <span data-i18n="stat_courses">Courses</span></span>
+          <span class="material-symbols-rounded" style="color: var(--secondary)"
+            >library_books</span
+          >
+          <span class="pill-text"
+            ><strong
+              class="stat-pill-num"
+              id="dynamic-course-count-pill"
+              data-count="5"
+              data-prefix="+"
+              >+5</strong
+            >
+            <span data-i18n="stat_courses">Courses</span></span
+          >
         </div>
       </div>
     </div>
@@ -40,11 +83,14 @@
 </section>
 
 <!-- Featured Courses -->
-<section id="courses" class="featured-courses section-padding">
+<section id="courses" class="featured-courses section-padding full-width-bg">
   <div class="section-container">
     <div class="section-header fade-in-up">
       <h2 data-i18n="section_courses_title">Featured Courses</h2>
-      <p data-i18n="section_courses_desc">Start with our most popular and highly-rated courses chosen by thousands of learners.</p>
+      <p data-i18n="section_courses_desc">
+        Start with our most popular and highly-rated courses chosen by thousands
+        of learners.
+      </p>
     </div>
     <div class="tracks-grid" id="courses-container" data-featured>
       <!-- Dynamic courses injected by main.js -->
@@ -52,144 +98,246 @@
     <div class="courses-quick-action fade-in-up">
       <p>
         <span data-i18n="already_enrolled">Already enrolled in a course?</span>
-        <a href="/payment" class="payment-link" data-i18n="nav_payment_link">Confirm payment here</a>
+        <a href="/payment" class="payment-link" data-i18n="nav_payment_link"
+          >Confirm payment here</a
+        >
       </p>
     </div>
   </div>
 </section>
 
-<!-- Course Registration Steps -->
-<section id="registration-steps" class="registration-steps section-padding">
+<!-- How E-Tracks Works (Timeline) -->
+<section
+  id="registration-steps"
+  class="registration-steps section-padding full-width-bg"
+>
   <div class="section-container">
-    <div class="section-header fade-in-up">
-      <h2 data-i18n="section_steps_title">Course Registration Steps</h2>
-      <p data-i18n="section_steps_desc">Follow these simple steps to enroll and start learning in your course.</p>
+    <div class="section-header text-center fade-in-up">
+      <h2 data-i18n="section_how_title">How E-Tracks Works</h2>
+      <p data-i18n="section_how_desc">
+        Simple steps to start your learning journey
+      </p>
     </div>
-    
-    <div class="steps-grid-container">
-      <div class="steps-connector-line"></div>
-      <div class="steps-grid">
+
+    <div class="timeline-container">
+      <div class="timeline-line-dashed"></div>
+      <div class="timeline-steps">
         <!-- Step 1 -->
-        <div class="step-card fade-in-up">
-          <div class="step-badge">01</div>
-          <div class="step-icon-wrapper">
-            <span class="material-symbols-rounded">person_add</span>
+        <div class="timeline-step fade-in-up">
+          <div class="timeline-icon-wrapper">
+            <div class="timeline-badge">01</div>
+            <span class="material-symbols-rounded">person</span>
           </div>
-          <h3 data-i18n="step_1_reg_title">Create Account</h3>
-          <p data-i18n="step_1_reg_desc">Create a new account on our platform or log in if you already have one.</p>
-        </div>
-        
-        <!-- Step 2 -->
-        <div class="step-card fade-in-up delay-1">
-          <div class="step-badge">02</div>
-          <div class="step-icon-wrapper">
-            <span class="material-symbols-rounded">assignment</span>
+          <div class="timeline-text">
+            <h3 data-i18n="step_1_reg_title">Create Account</h3>
+            <p data-i18n="step_1_reg_desc">
+              Sign up in minutes and get started
+            </p>
           </div>
-          <h3 data-i18n="step_2_reg_title">Register in Form</h3>
-          <p data-i18n="step_2_reg_desc">Select your desired course and fill out the registration form details.</p>
-        </div>
-        
-        <!-- Step 3 -->
-        <div class="step-card fade-in-up delay-2">
-          <div class="step-badge">03</div>
-          <div class="step-icon-wrapper">
-            <span class="material-symbols-rounded">payments</span>
-          </div>
-          <h3 data-i18n="step_3_reg_title">Make Payment</h3>
-          <p data-i18n="step_3_reg_desc">Transfer the course fees using Vodafone Cash or InstaPay to the provided number.</p>
-        </div>
-        
-        <!-- Step 4 -->
-        <div class="step-card fade-in-up delay-3">
-          <div class="step-badge">04</div>
-          <div class="step-icon-wrapper">
-            <span class="material-symbols-rounded">support_agent</span>
-          </div>
-          <h3 data-i18n="step_4_reg_title">Contact Support</h3>
-          <p data-i18n="step_4_reg_desc">Send the payment receipt via WhatsApp to complete your registration.</p>
-        </div>
-        
-        <!-- Step 5 -->
-        <div class="step-card fade-in-up delay-4">
-          <div class="step-badge">05</div>
-          <div class="step-icon-wrapper">
-            <span class="material-symbols-rounded">pending_actions</span>
-          </div>
-          <h3 data-i18n="step_5_reg_title">Wait for Approval</h3>
-          <p data-i18n="step_5_reg_desc">Our team will review and approve your registration within minutes.</p>
         </div>
 
-      </div><!-- end steps-grid -->
-    </div><!-- end steps-grid-container -->
-    
-    <div class="steps-cta fade-in-up">
-      <a href="/register" class="btn btn-primary btn-lg" data-i18n="btn_register_now_steps" style="text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 8px;">
-        <span>Register Now in the Course</span>
-        <span class="material-symbols-rounded">arrow_forward</span>
-      </a>
+        <!-- Step 2 -->
+        <div class="timeline-step fade-in-up delay-1">
+          <div class="timeline-icon-wrapper">
+            <div class="timeline-badge">02</div>
+            <span class="material-symbols-rounded">play_lesson</span>
+          </div>
+          <div class="timeline-text">
+            <h3 data-i18n="step_2_reg_title">Choose Course</h3>
+            <p data-i18n="step_2_reg_desc">
+              Browse courses and select what interests you
+            </p>
+          </div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="timeline-step fade-in-up delay-2">
+          <div class="timeline-icon-wrapper">
+            <div class="timeline-badge">03</div>
+            <span class="material-symbols-rounded">school</span>
+          </div>
+          <div class="timeline-text">
+            <h3 data-i18n="step_3_reg_title">Make Payment</h3>
+            <p data-i18n="step_3_reg_desc">
+              Secure payment via multiple options
+            </p>
+          </div>
+        </div>
+
+        <!-- Step 4 -->
+        <div class="timeline-step fade-in-up delay-3">
+          <div class="timeline-icon-wrapper">
+            <div class="timeline-badge">04</div>
+            <span class="material-symbols-rounded">schedule</span>
+          </div>
+          <div class="timeline-text">
+            <h3 data-i18n="step_4_reg_title">Start Learning</h3>
+            <p data-i18n="step_4_reg_desc">
+              Access your course and learn at your pace
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- Why Choose Us -->
+<!-- Why Choose E-Tracks? (Bento Grid) -->
 <section id="why-us" class="why-us-section section-padding bg-light">
   <div class="section-container">
-    <div class="section-header fade-in-up">
-      <h2 data-i18n="section_why_title">Why Choose e-tracks?</h2>
+    <div class="section-header text-center fade-in-up">
+      <h2 data-i18n="section_why_title">Why Choose D-Tracks?</h2>
     </div>
-    <div class="features-grid">
-      <div class="feature-item fade-in-up">
-        <span class="material-symbols-rounded feature-icon">skillet</span>
-        <h3 data-i18n="feat_practical_title">Practical Learning</h3>
-        <p data-i18n="feat_practical_desc">Learn by doing with real-world projects and hands-on experience.</p>
+
+    <div class="bento-image-grid">
+      <!-- Large Left Card -->
+      <div class="bento-card bento-large fade-in-up">
+        <div class="bento-content">
+          <h3 data-i18n="feat_pace_title">Learn at Your Pace</h3>
+          <p data-i18n="feat_pace_desc">
+            Access courses anytime, anywhere. Learn on your schedule.
+          </p>
+        </div>
+        <img
+          src="/assets/bento_student.png"
+          alt="Student learning"
+          class="bento-illustration bento-img-student"
+        />
+        <div class="bento-arrow">
+          <span class="material-symbols-rounded">chevron_right</span>
+        </div>
       </div>
-      <div class="feature-item fade-in-up delay-1">
-        <span class="material-symbols-rounded feature-icon">trending_up</span>
-        <h3 data-i18n="feat_track_title">Track Your Progress</h3>
-        <p data-i18n="feat_track_desc">Stay motivated and monitor your growth step by step.</p>
+
+      <!-- Middle Column -->
+      <div class="bento-col">
+        <!-- Top Middle -->
+        <div class="bento-card bento-small fade-in-up delay-1">
+          <div class="bento-content">
+            <h3 data-i18n="feat_expert_title">Expert Instructors</h3>
+            <p data-i18n="feat_expert_desc">
+              Learn from industry experts with real experience.
+            </p>
+          </div>
+          <img
+            src="/assets/bento_medal.png"
+            alt="Expert badge"
+            class="bento-illustration bento-img-medal"
+          />
+          <div class="bento-arrow">
+            <span class="material-symbols-rounded">chevron_right</span>
+          </div>
+        </div>
+
+        <!-- Bottom Middle -->
+        <div class="bento-card bento-small fade-in-up delay-2">
+          <div class="bento-content">
+            <h3 data-i18n="feat_community_title">Community Support</h3>
+            <p data-i18n="feat_community_desc">
+              Join a community of learners and grow together.
+            </p>
+          </div>
+          <div class="bento-illustration bento-avatars-group">
+            <img
+              src="/assets/bento_avatars.png"
+              alt="Community avatars"
+              class="bento-img-avatars"
+            />
+            <div class="avatar-count">+2K</div>
+          </div>
+          <div class="bento-arrow">
+            <span class="material-symbols-rounded">chevron_right</span>
+          </div>
+        </div>
       </div>
-      <div class="feature-item fade-in-up delay-2">
-        <span class="material-symbols-rounded feature-icon">school</span>
-        <h3 data-i18n="feat_expert_title">Expert Instructors</h3>
-        <p data-i18n="feat_expert_desc">Learn from professionals with real industry experience.</p>
-      </div>
-      <div class="feature-item fade-in-up delay-3">
-        <span class="material-symbols-rounded feature-icon">schedule</span>
-        <h3 data-i18n="feat_flex_title">Flexible Learning</h3>
-        <p data-i18n="feat_flex_desc">Learn anytime, anywhere at your own pace.</p>
+
+      <!-- Right Column -->
+      <div class="bento-col">
+        <!-- Top Right -->
+        <div class="bento-card bento-small fade-in-up delay-1">
+          <div class="bento-content">
+            <h3 data-i18n="feat_track_title">Track Progress</h3>
+            <p data-i18n="feat_track_desc">
+              Monitor your progress and achievements in real-time.
+            </p>
+          </div>
+          <img
+            src="/assets/bento_chart.png"
+            alt="Progress chart"
+            class="bento-illustration bento-img-chart"
+          />
+          <div class="bento-arrow">
+            <span class="material-symbols-rounded">chevron_right</span>
+          </div>
+        </div>
+
+        <!-- Bottom Right -->
+        <div class="bento-card bento-small fade-in-up delay-2">
+          <div class="bento-content">
+            <h3 data-i18n="feat_cert_title">Certificate</h3>
+            <p data-i18n="feat_cert_desc">
+              Earn certificates and boost your career opportunities.
+            </p>
+          </div>
+          <img
+            src="/assets/bento_certificate.png"
+            alt="Certificate"
+            class="bento-illustration bento-img-cert"
+          />
+          <div class="bento-arrow">
+            <span class="material-symbols-rounded">chevron_right</span>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- Stats -->
-<section class="stats-section section-padding">
+<!-- Our Impact Stats Banner -->
+<section class="impact-banner-section section-padding">
   <div class="section-container">
-    <div class="stats-wrapper fade-in-up">
-      <div class="stats-header">
-        <h2 data-i18n="section_impact_title">Our Impact</h2>
-        <p data-i18n="section_impact_desc">Empowering learners globally with high-quality education.</p>
-      </div>
-      <div class="stats-grid">
-        <div class="stat-item reveal-scale">
-          <div class="icon-wrapper">
-            <span class="material-symbols-rounded">group</span>
-          </div>
-          <h3 class="stat-number" data-count="725" data-prefix="+">+725</h3>
+    <div class="impact-pill-banner fade-in-up">
+      <div class="impact-stat-item">
+        <span class="material-symbols-rounded impact-icon">groups</span>
+        <div class="impact-text">
+          <h3 class="stat-number-wrapper" dir="ltr">
+            <span class="stat-number" data-count="12">12</span
+            ><span class="stat-suffix">K+</span>
+          </h3>
           <p data-i18n="stat_students">Students</p>
         </div>
-        <div class="stat-item reveal-scale">
-          <div class="icon-wrapper">
-            <span class="material-symbols-rounded">library_books</span>
-          </div>
-          <h3 class="stat-number" id="dynamic-course-count" data-count="5" data-prefix="+">+5</h3>
+      </div>
+
+      <div class="impact-stat-item">
+        <span class="material-symbols-rounded impact-icon">work</span>
+        <div class="impact-text">
+          <h3 class="stat-number-wrapper" dir="ltr">
+            <span class="stat-number" id="dynamic-course-count" data-count="320"
+              >320</span
+            ><span class="stat-suffix">+</span>
+          </h3>
           <p data-i18n="stat_courses">Courses</p>
         </div>
-        <div class="stat-item reveal-scale">
-          <div class="icon-wrapper">
-            <span class="material-symbols-rounded star">star</span>
-          </div>
-          <h3 class="stat-number" data-count="4.8" data-decimal="1">4.8</h3>
+      </div>
+
+      <div class="impact-stat-item">
+        <span class="material-symbols-rounded impact-icon">ads_click</span>
+        <div class="impact-text">
+          <h3 class="stat-number-wrapper" dir="ltr">
+            <span class="stat-number" data-count="98">98</span
+            ><span class="stat-suffix">%</span>
+          </h3>
+          <p data-i18n="stat_completion">Completion Rate</p>
+        </div>
+      </div>
+
+      <div class="impact-stat-item">
+        <span class="material-symbols-rounded impact-icon star">star</span>
+        <div class="impact-text">
+          <h3 class="stat-number-wrapper" dir="ltr">
+            <span class="stat-number" data-count="4.9" data-decimal="1"
+              >4.9</span
+            >
+          </h3>
           <p data-i18n="stat_avg_rating">Average Rating</p>
         </div>
       </div>
@@ -197,14 +345,31 @@
   </div>
 </section>
 
-<!-- Final CTA -->
-<section class="final-cta section-padding">
-  <div class="cta-container fade-in-up">
-    <h2 data-i18n="cta_title">Ready to start your journey?</h2>
-    <p data-i18n="cta_desc">Join hundreds of learners and start building your future today.</p>
-    <a href="/register" class="btn btn-primary btn-lg" data-i18n="btn_get_started">Get Started Now</a>
+<!-- Homepage CTA Box -->
+<section
+  class="homepage-cta-section"
+  style="
+    background: transparent;
+    position: relative;
+    z-index: 10;
+    padding: 0 24px;
+    margin-bottom: 40px;
+  "
+>
+  <div class="section-container">
+    <div class="footer-cta-box fade-in-up">
+      <div class="cta-content">
+        <h3 data-i18n="cta_title">Ready to start your journey?</h3>
+        <p data-i18n="cta_desc">
+          Join thousands of learners and start building your future today.
+        </p>
+      </div>
+      <a href="/register" class="btn btn-primary cta-btn">
+        <span data-i18n="btn_get_started">Get Started</span>
+        <span class="material-symbols-rounded" dir="auto">arrow_forward</span>
+      </a>
+    </div>
   </div>
 </section>
-
 
 <%- include('../partials/support-button') %>

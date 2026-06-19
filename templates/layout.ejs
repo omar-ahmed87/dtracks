@@ -36,7 +36,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
-  <link rel="stylesheet" href="/css/style.css?v=5.1" />
+  <link rel="stylesheet" href="/css/style.css?v=5.7" />
   <% if (typeof pageStyles !== 'undefined' && pageStyles) { %>
     <% pageStyles.forEach(style => { %>
       <link rel="stylesheet" href="<%= style %>?v=4.5" />
@@ -60,7 +60,7 @@
     <%- body %>
   </main>
 
-  <% if (!(typeof hideHeaderFooter !== 'undefined' && hideHeaderFooter) && !(typeof hideFooter !== 'undefined' && hideFooter)) { %>
+  <% if (!(typeof hideHeaderFooter !== 'undefined' && hideHeaderFooter) && !(typeof hideFooter !== 'undefined' && hideFooter) && typeof path !== 'undefined' && path === '/') { %>
   <%- include('partials/footer') %>
   <% } %>
 

@@ -1,0 +1,293 @@
+{
+  "1": {
+    "modules": [
+      {
+        "id": "m1",
+        "title": "Module 1: Getting Started",
+        "titleAr": "الوحدة 1: البداية",
+        "lessons": [
+          {
+            "id": "l1",
+            "title": "Introduction & Overview",
+            "titleAr": "مقدمة ونظرة عامة",
+            "duration": "12:00",
+            "type": "video",
+            "embedUrl": "",
+            "completed": false
+          },
+          {
+            "id": "l2",
+            "title": "Key Concepts",
+            "titleAr": "المفاهيم الأساسية",
+            "duration": "18:00",
+            "type": "video",
+            "embedUrl": "",
+            "completed": false,
+            "visible": true
+          }
+        ]
+      },
+      {
+        "id": "m2",
+        "title": "Module 2: Practice",
+        "titleAr": "الوحدة 2: التطبيق",
+        "lessons": [
+          {
+            "id": "l3",
+            "title": "Guided Exercise",
+            "titleAr": "تمرين موجّه",
+            "duration": "22:00",
+            "type": "video",
+            "embedUrl": "",
+            "completed": false
+          }
+        ]
+      },
+      {
+        "id": "m3",
+        "title": "Module 3: Assessment",
+        "titleAr": "الوحدة 3: التقييم",
+        "lessons": [
+          {
+            "id": "l4",
+            "title": "Review & Summary",
+            "titleAr": "مراجعة وملخص",
+            "duration": "10:00",
+            "type": "video",
+            "embedUrl": "",
+            "completed": false
+          }
+        ]
+      }
+    ],
+    "quiz": {
+      "id": "quiz-1",
+      "title": "Course #1 — Final Quiz",
+      "titleAr": "اختبار Course #1",
+      "questionCount": 10,
+      "timeLimitMinutes": 30,
+      "maxAttempts": 2,
+      "passingScore": 70,
+      "questions": [
+        {
+          "id": "q1",
+          "text": "What is the main topic of this course?",
+          "textAr": "ما هو الموضوع الرئيسي لهذا الكورس؟",
+          "options": [
+            {
+              "id": "a",
+              "text": "Course #1",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Unrelated topic",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "General knowledge only",
+              "correct": false
+            }
+          ]
+        },
+        {
+          "id": "q2",
+          "text": "How do you track your progress on E-Tracks?",
+          "textAr": "كيف تتابع تقدمك على E-Tracks؟",
+          "options": [
+            {
+              "id": "a",
+              "text": "Through the student dashboard",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "By email only",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Progress is not tracked",
+              "correct": false
+            }
+          ]
+        },
+        {
+          "id": "q3",
+          "text": "Where are course videos hosted?",
+          "textAr": "أين تُستضاف فيديوهات الكورس؟",
+          "options": [
+            {
+              "id": "a",
+              "text": "YouTube (embedded)",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Local downloads only",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Not available",
+              "correct": false
+            }
+          ]
+        }
+      ]
+    },
+    "mainEmbed": ""
+  },
+  "2": {
+    "modules": [
+      {
+        "id": "m1",
+        "title": "Module 1: Getting Started",
+        "titleAr": "الوحدة 1: البداية",
+        "lessons": [
+          {
+            "id": "l1",
+            "title": "Introduction & Overview",
+            "titleAr": "مقدمة ونظرة عامة",
+            "duration": "12:00",
+            "type": "video",
+            "embedUrl": "",
+            "completed": false
+          },
+          {
+            "id": "l2",
+            "title": "Key Concepts",
+            "titleAr": "المفاهيم الأساسية",
+            "duration": "18:00",
+            "type": "video",
+            "embedUrl": "",
+            "completed": false
+          },
+          {
+            "id": "l3",
+            "title": "قفغقفغقفغ",
+            "titleAr": "قفغقفغفقغفقغق",
+            "type": "video",
+            "duration": "قفغقفغفقغفقغفقغقفغققفغفغفقغ",
+            "embedUrl": "https://www.youtube.com/embed/3T-CyndWCno",
+            "attachment": "",
+            "published": true,
+            "visible": true,
+            "completed": false
+          }
+        ]
+      },
+      {
+        "id": "m2",
+        "title": "Module 2: Practice",
+        "titleAr": "الوحدة 2: التطبيق",
+        "lessons": [
+          {
+            "id": "l3",
+            "title": "Guided Exercise",
+            "titleAr": "تمرين موجّه",
+            "duration": "22:00",
+            "type": "video",
+            "embedUrl": "",
+            "completed": false
+          }
+        ]
+      },
+      {
+        "id": "m3",
+        "title": "Module 3: Assessment",
+        "titleAr": "الوحدة 3: التقييم",
+        "lessons": [
+          {
+            "id": "l4",
+            "title": "Review & Summary",
+            "titleAr": "مراجعة وملخص",
+            "duration": "10:00",
+            "type": "video",
+            "embedUrl": "",
+            "completed": false
+          }
+        ]
+      }
+    ],
+    "quiz": {
+      "id": "quiz-2",
+      "title": "Course #2 — Final Quiz",
+      "titleAr": "اختبار Course #2",
+      "questionCount": 10,
+      "timeLimitMinutes": 30,
+      "maxAttempts": 2,
+      "passingScore": 70,
+      "questions": [
+        {
+          "id": "q1",
+          "text": "What is the main topic of this course?",
+          "textAr": "ما هو الموضوع الرئيسي لهذا الكورس؟",
+          "options": [
+            {
+              "id": "a",
+              "text": "Course #2",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Unrelated topic",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "General knowledge only",
+              "correct": false
+            }
+          ]
+        },
+        {
+          "id": "q2",
+          "text": "How do you track your progress on E-Tracks?",
+          "textAr": "كيف تتابع تقدمك على E-Tracks؟",
+          "options": [
+            {
+              "id": "a",
+              "text": "Through the student dashboard",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "By email only",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Progress is not tracked",
+              "correct": false
+            }
+          ]
+        },
+        {
+          "id": "q3",
+          "text": "Where are course videos hosted?",
+          "textAr": "أين تُستضاف فيديوهات الكورس؟",
+          "options": [
+            {
+              "id": "a",
+              "text": "YouTube (embedded)",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Local downloads only",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Not available",
+              "correct": false
+            }
+          ]
+        }
+      ]
+    },
+    "mainEmbed": ""
+  }
+}

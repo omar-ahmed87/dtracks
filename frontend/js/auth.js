@@ -20,7 +20,8 @@ function handleLogin(event) {
         submitBtn.innerHTML = '<span class="material-symbols-rounded spinning" style="font-size: 20px;">refresh</span> Redirecting...';
       }
       setTimeout(() => {
-        window.location.href = data.redirect || (data.role === 'admin' ? '/admin' : '/classroom');
+        const returnTo = new URLSearchParams(window.location.search).get('returnTo');
+        window.location.href = returnTo || data.redirect || (data.role === 'admin' ? '/admin' : '/classroom');
       }, 500);
     })
     .catch((err) => showToast(`Login failed: ${err.message}`, 'error'));
@@ -48,7 +49,8 @@ function handleSignup(event) {
       if (successDiv) successDiv.style.display = 'block';
       showToast('Account created successfully', 'success');
       setTimeout(() => {
-        window.location.href = '/classroom';
+        const returnTo = new URLSearchParams(window.location.search).get('returnTo');
+        window.location.href = returnTo || '/classroom';
       }, 2000);
     })
     .catch((err) => showToast(`Signup failed: ${err.message}`, 'error'));
@@ -81,10 +83,15 @@ async function handleEnrollment(event) {
 
   try {
     const data = await apiPost('/api/auth/enroll-course', {
-      email: String(fd.get('email') || '').trim(),
-      fullName: String(fd.get('fullName') || '').trim(),
       phone: String(fd.get('phone') || '').trim(),
       courseId,
+      education_status: String(fd.get('education_status') || '').trim(),
+      college: String(fd.get('college') || '').trim(),
+      department: String(fd.get('department') || '').trim(),
+      level: String(fd.get('level') || '').trim(),
+      experience: String(fd.get('experience') || '').trim(),
+      age: String(fd.get('age') || '').trim(),
+      gender: String(fd.get('gender') || '').trim(),
     });
     showToast(
       localStorage.getItem('lang') === 'ar'
@@ -172,6 +179,16 @@ async function initForms() {
     } catch (err) {
       console.error('Failed to load courses for select:', err);
     }
+  }
+
+  // Preserve returnTo parameter for auth page toggles
+  const params = new URLSearchParams(window.location.search);
+  const returnTo = params.get('returnTo');
+  if (returnTo) {
+    const signupLink = document.querySelector('a[href="/signup"]');
+    if (signupLink) signupLink.href = `/signup?returnTo=${encodeURIComponent(returnTo)}`;
+    const loginLink = document.querySelector('a[href="/login"]');
+    if (loginLink) loginLink.href = `/login?returnTo=${encodeURIComponent(returnTo)}`;
   }
 
   document.getElementById('login-form')?.addEventListener('submit', handleLogin);

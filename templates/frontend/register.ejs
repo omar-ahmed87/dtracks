@@ -39,31 +39,8 @@
     <% } %>
 
     <form id="enrollment-form" class="form-container" method="POST" action="/register/submit" autocomplete="off">
-      <div class="form-group">
-        <label for="fullName" class="form-label" data-i18n="label_fullname">Full Name</label>
-        <div class="input-wrapper">
-          <span class="material-symbols-rounded input-icon">person</span>
-          <input type="text" id="fullName" name="fullName" class="form-control with-icon" required />
-        </div>
-      </div>
-
-      <div class="split-row">
-        <div class="form-group">
-          <label for="email" class="form-label" data-i18n="label_email">Email Address</label>
-          <div class="input-wrapper">
-            <span class="material-symbols-rounded input-icon">mail</span>
-            <input type="email" id="email" name="email" class="form-control with-icon" required />
-          </div>
-        </div>
-        <div class="form-group">
-          <label for="phone" class="form-label" data-i18n="label_phone">Phone Number</label>
-          <div class="input-wrapper">
-            <span class="material-symbols-rounded input-icon">call</span>
-            <input type="tel" id="phone" name="phone" class="form-control with-icon" placeholder="+20 1XX XXX XXXX" required />
-          </div>
-        </div>
-      </div>
-
+      
+      <!-- Course Selection -->
       <div class="form-group">
         <label for="course" class="form-label" data-i18n="label_course">Select Preferred Course</label>
         <div class="input-wrapper">
@@ -79,7 +56,109 @@
         </div>
       </div>
 
-      <button type="submit" class="btn btn-primary btn-glow w-100">
+      <!-- Phone Number -->
+      <div class="form-group">
+        <label for="phone" class="form-label" data-i18n="label_phone">Phone Number</label>
+        <div class="input-wrapper">
+          <span class="material-symbols-rounded input-icon">call</span>
+          <input type="tel" id="phone" name="phone" class="form-control with-icon" placeholder="+20 1XX XXX XXXX" required />
+        </div>
+      </div>
+
+      <!-- Section: Educational Info -->
+      <div class="form-section-title" style="margin: 24px 0 16px; padding-bottom: 8px; border-bottom: 1px solid var(--glass-border); font-weight: 700; color: var(--primary);" data-i18n="label_education_info">
+        Educational Information
+      </div>
+
+      <div class="split-row">
+        <div class="form-group">
+          <label for="education_status" class="form-label" data-i18n="label_education_status">Are you?</label>
+          <div class="input-wrapper">
+            <span class="material-symbols-rounded input-icon">school</span>
+            <select id="education_status" name="education_status" class="form-control with-icon" required>
+              <option value="" disabled selected data-i18n="label_education_status">Are you?</option>
+              <option value="student" data-i18n="option_student">Student</option>
+              <option value="graduate" data-i18n="option_graduate">Graduate</option>
+            </select>
+            <span class="material-symbols-rounded select-arrow">expand_more</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="college" class="form-label" data-i18n="label_college">College</label>
+          <div class="input-wrapper">
+            <span class="material-symbols-rounded input-icon">domain</span>
+            <input type="text" id="college" name="college" class="form-control with-icon" required />
+          </div>
+        </div>
+      </div>
+
+      <div class="split-row">
+        <div class="form-group">
+          <label for="department" class="form-label" data-i18n="label_department">Department</label>
+          <div class="input-wrapper">
+            <span class="material-symbols-rounded input-icon">subject</span>
+            <input type="text" id="department" name="department" class="form-control with-icon" required />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="level" class="form-label" data-i18n="label_current_level">Current Level</label>
+          <div class="input-wrapper">
+            <span class="material-symbols-rounded input-icon">trending_up</span>
+            <select id="level" name="level" class="form-control with-icon" required>
+              <option value="" disabled selected data-i18n="label_current_level">Current Level</option>
+              <option value="beginner" data-i18n="option_beginner">Beginner</option>
+              <option value="intermediate" data-i18n="option_intermediate">Intermediate</option>
+              <option value="advanced" data-i18n="option_advanced">Advanced</option>
+            </select>
+            <span class="material-symbols-rounded select-arrow">expand_more</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="experience" class="form-label" data-i18n="label_prior_experience">Do you have prior experience in this field?</label>
+        <div class="input-wrapper">
+          <span class="material-symbols-rounded input-icon">model_training</span>
+          <select id="experience" name="experience" class="form-control with-icon" required>
+            <option value="" disabled selected data-i18n="label_prior_experience">Do you have prior experience in this field?</option>
+            <option value="yes" data-i18n="option_yes">Yes</option>
+            <option value="no" data-i18n="option_no">No</option>
+          </select>
+          <span class="material-symbols-rounded select-arrow">expand_more</span>
+        </div>
+      </div>
+
+      <!-- Section: Personal Info -->
+      <div class="form-section-title" style="margin: 24px 0 16px; padding-bottom: 8px; border-bottom: 1px solid var(--glass-border); font-weight: 700; color: var(--primary);" data-i18n="label_personal_info">
+        Personal Information
+      </div>
+
+      <div class="split-row">
+        <div class="form-group">
+          <label for="age" class="form-label" data-i18n="label_age">Age</label>
+          <div class="input-wrapper">
+            <span class="material-symbols-rounded input-icon">cake</span>
+            <input type="number" id="age" name="age" class="form-control with-icon" min="1" max="120" required />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="gender" class="form-label" data-i18n="label_gender">Gender</label>
+          <div class="input-wrapper">
+            <span class="material-symbols-rounded input-icon">wc</span>
+            <select id="gender" name="gender" class="form-control with-icon" required>
+              <option value="" disabled selected data-i18n="label_gender">Gender</option>
+              <option value="male" data-i18n="option_male">Male</option>
+              <option value="female" data-i18n="option_female">Female</option>
+            </select>
+            <span class="material-symbols-rounded select-arrow">expand_more</span>
+          </div>
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-glow w-100" style="margin-top: 24px;">
         <span data-i18n="btn_register_submit">Complete Registration</span>
         <span class="material-symbols-rounded">arrow_right_alt</span>
       </button>
@@ -87,6 +166,5 @@
     </form>
   </div>
 </section>
-
 
 <%- include('../partials/support-button') %>

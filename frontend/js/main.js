@@ -169,9 +169,8 @@ async function renderHomeCourses(container) {
     countPill.dataset.count = String(courseKeys.length);
   }
   if (countStat) {
-    countStat.textContent = `+${courseKeys.length}`;
+    countStat.textContent = courseKeys.length;
     countStat.dataset.count = String(courseKeys.length);
-    countStat.dataset.prefix = "+";
   }
 
   const isFeatured = container.hasAttribute("data-featured");
@@ -188,10 +187,7 @@ async function renderHomeCourses(container) {
     const enrollText =
       (translations[lang] && translations[lang]["btn_enroll"]) ||
       "Register Now";
-    const isLoggedIn = isAuthenticated();
-    const exploreHref = isLoggedIn
-      ? `/classroom?course=${id}`
-      : `/register?course=${id}`;
+    const exploreHref = `/register?course=${id}`;
 
     const card = document.createElement("div");
     card.className = "course-card reveal-up course-card-animated";
@@ -486,3 +482,4 @@ async function initSearchDropdown() {
     }
   });
 }
+
