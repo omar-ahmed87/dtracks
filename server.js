@@ -1,11 +1,14 @@
-require('dotenv').config();
+require("dotenv").config();
 
 // Log startup info
-console.log('Starting E-Tracks server...');
-console.log('Environment:', process.env.NODE_ENV || 'development');
-console.log('Port:', process.env.PORT || 10000);
-console.log('Supabase URL configured:', !!process.env.SUPABASE_URL);
-console.log('Supabase Key configured:', !!(process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_KEY));
+console.log("Starting E-Tracks server...");
+console.log("Environment:", process.env.NODE_ENV || "development");
+console.log("Port:", process.env.PORT || 10000);
+console.log("Supabase URL configured:", !!process.env.SUPABASE_URL);
+console.log(
+  "Supabase Key configured:",
+  !!(process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_KEY),
+);
 
 const express = require("express");
 const helmet = require("helmet");
@@ -19,36 +22,43 @@ const expressLayouts = require("express-ejs-layouts");
 const path = require("path");
 
 // Import routes with error handling
-let authRouter, authenticateJWT, courseRouter, adminRouter, studentRouter, viewsRouter, logError, backupMiddleware;
+let authRouter,
+  authenticateJWT,
+  courseRouter,
+  adminRouter,
+  studentRouter,
+  viewsRouter,
+  logError,
+  backupMiddleware;
 
 try {
-  console.log('Loading routes...');
+  console.log("Loading routes...");
   const authModule = require("./routes/auth");
   authRouter = authModule.router;
   authenticateJWT = authModule.authenticateJWT;
-  console.log('✓ Auth router loaded');
-  
+  console.log("✓ Auth router loaded");
+
   courseRouter = require("./routes/courses").router;
-  console.log('✓ Course router loaded');
-  
+  console.log("✓ Course router loaded");
+
   adminRouter = require("./routes/admin").router;
-  console.log('✓ Admin router loaded');
-  
+  console.log("✓ Admin router loaded");
+
   studentRouter = require("./routes/student").router;
-  console.log('✓ Student router loaded');
-  
+  console.log("✓ Student router loaded");
+
   viewsRouter = require("./routes/views").router;
-  console.log('✓ Views router loaded');
-  console.log('✓ Views router type:', typeof viewsRouter);
-  console.log('✓ Views router is function:', typeof viewsRouter === 'function');
-  
+  console.log("✓ Views router loaded");
+  console.log("✓ Views router type:", typeof viewsRouter);
+  console.log("✓ Views router is function:", typeof viewsRouter === "function");
+
   logError = require("./logger").logError;
   backupMiddleware = require("./backupMiddleware");
-  console.log('✓ All routes loaded successfully');
+  console.log("✓ All routes loaded successfully");
 } catch (err) {
-  console.error('⚠️  Error loading routes:', err.message);
-  console.error('Full error:', err);
-  console.error('Server will start with limited functionality');
+  console.error("⚠️  Error loading routes:", err.message);
+  console.error("Full error:", err);
+  console.error("Server will start with limited functionality");
   // Create dummy middleware to prevent crashes
   authRouter = express.Router();
   courseRouter = express.Router();
@@ -65,15 +75,15 @@ const app = express();
 const PORT = process.env.PORT || 10000;
 
 console.log(`✓ Using PORT: ${PORT}`);
-console.log(`✓ NODE_ENV: ${process.env.NODE_ENV || 'development'}`);
+console.log(`✓ NODE_ENV: ${process.env.NODE_ENV || "development"}`);
 
 // Health check endpoint FIRST - before any middleware
 app.get("/health", (req, res) => {
-  res.status(200).json({ 
-    status: "ok", 
+  res.status(200).json({
+    status: "ok",
     timestamp: new Date().toISOString(),
     port: PORT,
-    env: process.env.NODE_ENV || 'development'
+    env: process.env.NODE_ENV || "development",
   });
 });
 
@@ -96,7 +106,11 @@ app.use(
         scriptSrc: ["'self'", "'unsafe-inline'"],
         fontSrc: ["'self'", "https://fonts.gstatic.com"],
         imgSrc: ["'self'", "data:", "https:", "http://localhost:3000"],
-        frameSrc: ["'self'", "https://www.youtube.com", "https://www.youtube-nocookie.com"],
+        frameSrc: [
+          "'self'",
+          "https://www.youtube.com",
+          "https://www.youtube-nocookie.com",
+        ],
         connectSrc: [
           "'self'",
           "https://*.supabase.co",
@@ -140,7 +154,8 @@ app.use((req, res, next) => {
 
 app.use((req, res, next) => {
   try {
-    res.locals.csrfToken = typeof req.csrfToken === "function" ? req.csrfToken() : "";
+    res.locals.csrfToken =
+      typeof req.csrfToken === "function" ? req.csrfToken() : "";
   } catch {
     res.locals.csrfToken = "";
   }
@@ -196,7 +211,9 @@ app.use(
 );
 
 // Serve static files BEFORE rate limiting so assets don't exhaust the limit
-app.use(express.static(path.join(process.cwd(), "frontend"), { dotfiles: "deny" }));
+app.use(
+  express.static(path.join(process.cwd(), "frontend"), { dotfiles: "deny" }),
+);
 app.use(
   "/static",
   express.static(path.join(process.cwd(), "public"), { dotfiles: "deny" }),
@@ -224,9 +241,9 @@ const authLimiter = rateLimit({
 app.use(backupMiddleware);
 
 // Routes
-console.log('✓ Registering routes...');
+console.log("✓ Registering routes...");
 app.use("/", viewsRouter);
-console.log('✓ Views router registered');
+console.log("✓ Views router registered");
 
 app.get("/api/csrf-token", (req, res) => {
   res.json({ csrfToken: req.csrfToken() });
@@ -235,7 +252,7 @@ app.use("/api/auth", authLimiter, authRouter);
 app.use("/api/courses", courseRouter);
 app.use("/api/student", studentRouter);
 app.use("/api/admin", adminRouter);
-console.log('✓ All routes registered');
+console.log("✓ All routes registered");
 
 // 404 — HTML pages for browser navigation, JSON for API
 app.use((req, res) => {
@@ -278,17 +295,17 @@ app.use((err, req, res, next) => {
 // Skip only for serverless platforms (Vercel, Netlify)
 if (!process.env.NETLIFY && !process.env.VERCEL) {
   // Always bind to 0.0.0.0 for cloud deployments (Railway, Render, etc.)
-  const host = '0.0.0.0';
-  
+  const host = "0.0.0.0";
+
   const server = app.listen(PORT, host, () => {
     console.log(`✓ Server running on port ${PORT}`);
     console.log(`✓ Health check available at /health`);
-    console.log(`✓ Environment: ${process.env.NODE_ENV || 'development'}`);
+    console.log(`✓ Environment: ${process.env.NODE_ENV || "development"}`);
   });
 
   // Handle server errors
-  server.on('error', (err) => {
-    console.error('❌ Server error:', err);
+  server.on("error", (err) => {
+    console.error("❌ Server error:", err);
     process.exit(1);
   });
 }

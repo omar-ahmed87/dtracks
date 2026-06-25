@@ -502,44 +502,64 @@
     </div>
     <div class="admin-modal-body">
       <input type="hidden" id="edit-course-id">
-      <div class="form-group">
-        <label class="form-label">Course Name</label>
-        <input type="text" id="course-name" class="form-control" placeholder="e.g. Web Development Basics" required>
-      </div>
-      <div class="form-row">
-        <div class="form-group flex-1">
-          <label class="form-label">Category (Tag)</label>
-          <input type="text" id="add-course-tag" class="form-control" placeholder="e.g. tag_comp">
+      
+      <!-- Basic Information Section -->
+      <div style="margin-bottom: 1.5rem;">
+        <h4 style="margin-bottom: 10px; color: var(--primary); font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px;">Basic Information</h4>
+        <div class="form-group">
+          <label class="form-label">Course Name <span style="color:red">*</span></label>
+          <input type="text" id="course-name" class="form-control" placeholder="e.g. Web Development Basics" required>
         </div>
-        <div class="form-group flex-1">
-          <label class="form-label">Duration (Weeks)</label>
-          <input type="number" id="add-course-weeks" class="form-control" placeholder="4">
+        <div class="form-group">
+          <label class="form-label">Description <span style="color:red">*</span></label>
+          <textarea id="course-description" class="form-control" rows="3" placeholder="Detailed course description (min 10 chars)"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Course Link (URL) <span style="color:red">*</span></label>
+          <input type="url" id="course-link" class="form-control" placeholder="https://www.youtube.com/...">
         </div>
       </div>
-      <div class="form-group">
-        <label class="form-label">Image URL</label>
-        <input type="url" id="add-course-img" class="form-control" placeholder="https://images.unsplash.com/...">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Description</label>
-        <textarea id="course-description" class="form-control" rows="3" placeholder="Course description (min 10 chars)"></textarea>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Course Link (URL)</label>
-        <input type="url" id="course-link" class="form-control" placeholder="https://...">
-      </div>
-      <div class="form-row">
-        <div class="form-group flex-1">
-          <label class="form-label">Rating</label>
-          <input type="text" id="add-course-rating" class="form-control" placeholder="4.8">
+
+      <!-- Display Settings Section -->
+      <div style="margin-bottom: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--glass-border);">
+        <h4 style="margin-bottom: 10px; color: var(--primary); font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px;">Display Settings</h4>
+        <div class="form-row">
+          <div class="form-group flex-1">
+            <label class="form-label">Category (Tag)</label>
+            <input type="text" id="add-course-tag" class="form-control" placeholder="e.g. tag_comp">
+          </div>
+          <div class="form-group flex-1">
+            <label class="form-label">Duration (Weeks)</label>
+            <input type="number" id="add-course-weeks" class="form-control" placeholder="e.g. 4">
+          </div>
         </div>
-        <div class="form-group flex-1">
-          <label class="form-label">Status</label>
-          <select id="course-status" class="form-control">
-            <option value="pending">Pending</option>
-            <option value="approved">Approved & Live</option>
-            <option value="rejected">Rejected</option>
-          </select>
+        <div class="form-row">
+          <div class="form-group flex-1">
+            <label class="form-label">Rating</label>
+            <input type="text" id="add-course-rating" class="form-control" placeholder="e.g. 4.8">
+          </div>
+          <div class="form-group flex-1">
+            <label class="form-label">Status</label>
+            <select id="course-status" class="form-control">
+              <option value="pending">Pending</option>
+              <option value="approved">Approved & Live</option>
+              <option value="rejected">Rejected</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Media Section -->
+      <div style="padding-top: 1rem; border-top: 1px solid var(--glass-border);">
+        <h4 style="margin-bottom: 10px; color: var(--primary); font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px;">Course Image</h4>
+        <div class="form-group">
+          <label class="form-label">Upload Image from Computer</label>
+          <input type="file" id="add-course-img-upload" class="form-control" accept="image/*" style="padding-top: 8px;">
+        </div>
+        <div style="text-align: center; margin: 10px 0; color: var(--text-muted); font-size: 12px;">— OR —</div>
+        <div class="form-group">
+          <label class="form-label">Image URL</label>
+          <input type="url" id="add-course-img" class="form-control" placeholder="https://images.unsplash.com/...">
         </div>
       </div>
     </div>

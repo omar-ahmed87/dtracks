@@ -8,6 +8,14 @@ const studentStore = require('../lib/studentStore');
 const notificationsStore = require('../lib/notificationsStore');
 const { getLocalPhone } = require('../lib/phone');
 const courseContentStore = require('../lib/courseContentStore');
+const { 
+  findUserByEmail, 
+  findUserByUsername, 
+  updateUser, 
+  deleteUser, 
+  findUserById 
+} = require('../lib/studentStore');
+const { updateCourseMeta } = require('../lib/coursesCatalog');
 
 const router = express.Router();
 
@@ -146,7 +154,15 @@ function validateCourseUpdate(req, res, next) {
     }
   }
 
-  if (Object.keys(updates).length === 0) {
+  // Meta fields don't go to Supabase updates, store them in req for later
+  req.updateCourseMeta = {
+    tagStr: req.body.tagStr,
+    weeks: req.body.weeks,
+    rating: req.body.rating,
+    img: req.body.img
+  };
+
+  if (Object.keys(updates).length === 0 && Object.keys(req.updateCourseMeta).length === 0) {
     return res.status(400).json({ error: 'Nothing to update' });
   }
 
@@ -272,6 +288,20 @@ router.post('/enrollments/:id/reject', authenticateJWT, requireAdmin, async (req
 
     res.json({
       message: 'Enrollment request rejected successfully',
+      enrollment: result.enrollment,
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.post('/enrollments/:id/revoke', authenticateJWT, requireAdmin, async (req, res, next) => {
+  try {
+    const leadId = req.params.id;
+    const result = await studentStore.revokeEnrollmentAccess(leadId);
+
+    res.json({
+      message: 'Course access revoked successfully',
       enrollment: result.enrollment,
     });
   } catch (err) {
@@ -458,10 +488,28 @@ router.get('/courses', authenticateJWT, requireAdmin, async (req, res, next) => 
       .order('created_at', { ascending: false });
 
     if (error) return next(error);
-    const mappedCourses = data.map(c => ({
-      ...c,
-      name: c.title
-    }));
+    
+    const fs = require('fs');
+    const path = require('path');
+    const META_FILE_PATH = path.join(process.cwd(), 'data', 'courses_meta.json');
+    let extraMeta = {};
+    if (fs.existsSync(META_FILE_PATH)) {
+      try {
+        extraMeta = JSON.parse(fs.readFileSync(META_FILE_PATH, 'utf8'));
+      } catch (e) {}
+    }
+
+    const mappedCourses = data.map(c => {
+      const meta = extraMeta[String(c.id)] || {};
+      return {
+        ...c,
+        name: c.title,
+        img: meta.img || null,
+        tagStr: meta.tagStr || null,
+        weeks: meta.weeks || null,
+        rating: meta.rating || null
+      };
+    });
     res.json({ courses: mappedCourses });
   } catch (err) {
     next(err);
@@ -470,7 +518,7 @@ router.get('/courses', authenticateJWT, requireAdmin, async (req, res, next) => 
 
 router.post('/courses', authenticateJWT, requireAdmin, async (req, res, next) => {
   try {
-    const { name, description, link, status } = req.body || {};
+    const { name, description, link, status, tagStr, weeks, rating, img } = req.body || {};
 
     if (!name || typeof name !== 'string' || name.trim().length < 3) {
       return res.status(400).json({ error: 'Course name is required (min 3 chars)' });
@@ -497,6 +545,15 @@ router.post('/courses', authenticateJWT, requireAdmin, async (req, res, next) =>
       .single();
 
     if (error) return next(error);
+    
+    // Save metadata locally
+    updateCourseMeta(String(data.id), {
+      tagStr: tagStr?.trim() || null,
+      weeks: weeks || null,
+      rating: rating?.trim() || null,
+      img: img || null
+    });
+
     data.name = data.title;
     res.status(201).json({ course: data });
   } catch (err) {
@@ -517,7 +574,25 @@ router.get('/courses/:id', authenticateJWT, requireAdmin, async (req, res, next)
 
     if (error) return next(error);
     if (!data) return res.status(404).json({ error: 'Course not found' });
+    
     data.name = data.title;
+    
+    const fs = require('fs');
+    const path = require('path');
+    const META_FILE_PATH = path.join(process.cwd(), 'data', 'courses_meta.json');
+    let extraMeta = {};
+    if (fs.existsSync(META_FILE_PATH)) {
+      try {
+        extraMeta = JSON.parse(fs.readFileSync(META_FILE_PATH, 'utf8'));
+      } catch (e) {}
+    }
+    
+    const meta = extraMeta[String(data.id)] || {};
+    data.img = meta.img || null;
+    data.tagStr = meta.tagStr || null;
+    data.weeks = meta.weeks || null;
+    data.rating = meta.rating || null;
+
     res.json({ course: data });
   } catch (err) {
     next(err);
@@ -551,15 +626,25 @@ router.patch('/courses/:id', authenticateJWT, requireAdmin, validateCourseUpdate
   if (!id) return res.status(400).json({ error: 'Invalid course ID' });
 
   try {
-    const { data, error } = await supabase
-      .from('courses')
-      .update(req.updateCoursePayload)
-      .eq('id', id)
-      .select('*')
-      .single();
+    let data = { id: id };
+    
+    if (Object.keys(req.updateCoursePayload).length > 0) {
+      const { data: updatedData, error } = await supabase
+        .from('courses')
+        .update(req.updateCoursePayload)
+        .eq('id', id)
+        .select('*')
+        .single();
 
-    if (error) return next(error);
-    data.name = data.title;
+      if (error) return next(error);
+      data = updatedData;
+    }
+
+    if (req.updateCourseMeta && Object.keys(req.updateCourseMeta).length > 0) {
+      updateCourseMeta(String(id), req.updateCourseMeta);
+    }
+
+    data.name = data.title || data.name;
     res.json({ course: data });
   } catch (err) {
     next(err);

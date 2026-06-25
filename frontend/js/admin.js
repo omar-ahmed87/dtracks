@@ -213,38 +213,41 @@ function renderCoursesTable(tbodyId, courses) {
 }
 
 window.switchAdminView = async (viewId, triggerItem) => {
-  document.querySelectorAll(".admin-view").forEach(v => v.style.display = "none");
-  const view = document.getElementById(viewId);
-  if (view) view.style.display = "block";
+  requestAnimationFrame(async () => {
+    document.querySelectorAll(".admin-view").forEach(v => v.style.display = "none");
+    const view = document.getElementById(viewId);
+    if (view) view.style.display = "block";
 
-  document.querySelectorAll(".admin-nav-item").forEach(item => item.classList.remove("active"));
-  triggerItem?.classList.add("active");
+    document.querySelectorAll(".admin-nav-item").forEach(item => item.classList.remove("active"));
+    triggerItem?.classList.add("active");
 
-  // Load view-specific data
-  if (viewId === "view-students") {
-    await renderEnrollmentsView();
-  } else if (viewId === "view-approved-students") {
-    await renderApprovedStudentsView();
-  } else if (viewId === "view-content-management") {
-    await renderContentManagementView();
-  } else if (viewId === "view-accounts") {
-    await renderAccountsView();
-  } else if (viewId === "view-manage-courses") {
-    renderManageCoursesView();
-  } else if (viewId === "view-course-messaging") {
-    await renderCourseMessagingView();
-  } else if (viewId === "view-dashboard") {
-    await renderEnrolledStudentsOverview();
-  } else if (viewId === "view-logs") {
-    await renderLogsView();
-  } else if (viewId === "view-backups") {
-    await renderBackupsView();
-  }
+    // Close mobile menu
+    const collapse = document.getElementById("adminSidebarCollapse");
+    collapse?.classList.remove("active");
+    document.querySelector(".admin-mobile-toggle")?.classList.remove("active");
+    document.getElementById('sidebarOverlay')?.classList.remove('active');
 
-  // Close mobile menu
-  const collapse = document.getElementById("adminSidebarCollapse");
-  collapse?.classList.remove("active");
-  document.querySelector(".admin-mobile-toggle")?.classList.remove("active");
+    // Load view-specific data
+    if (viewId === "view-students") {
+      await renderEnrollmentsView();
+    } else if (viewId === "view-approved-students") {
+      await renderApprovedStudentsView();
+    } else if (viewId === "view-content-management") {
+      await renderContentManagementView();
+    } else if (viewId === "view-accounts") {
+      await renderAccountsView();
+    } else if (viewId === "view-manage-courses") {
+      renderManageCoursesView();
+    } else if (viewId === "view-course-messaging") {
+      await renderCourseMessagingView();
+    } else if (viewId === "view-dashboard") {
+      await renderEnrolledStudentsOverview();
+    } else if (viewId === "view-logs") {
+      await renderLogsView();
+    } else if (viewId === "view-backups") {
+      await renderBackupsView();
+    }
+  });
 };
 
 function getApprovedCoursesForMessaging() {
@@ -387,8 +390,8 @@ async function loadCourseStudentsTable(courseId) {
             data-name="${s.name}"
             data-user-id="${s.userId || ""}"
             data-course-id="${s.courseId || courseId}">
-            Message
           </button>
+          ${s.status === 'active' ? `<button class="btn btn-outline btn-sm" style="color:#ef4444; border-color:#ef4444; background: transparent; padding: 4px 8px; font-size: 13px;" data-action="revoke-course-access" data-id="${s.enrollmentId}">Revoke</button>` : ''}
         </td>
       </tr>`;
       })
@@ -766,6 +769,9 @@ document.addEventListener('click', async (e) => {
     case 'send-direct-message':
       await window.sendDirectMessage();
       break;
+    case 'revoke-course-access':
+      await window.revokeCourseAccess(id);
+      break;
     case 'restore-backup': {
       const backupId = action.dataset.id;
       confirmAction(
@@ -1012,10 +1018,31 @@ window.saveCourseFinal = async () => {
   const status = document.getElementById('course-status').value || 'pending';
   const tag = document.getElementById('add-course-tag')?.value || '';
   const weeks = document.getElementById('add-course-weeks')?.value || '';
-  const img = document.getElementById('add-course-img')?.value || '';
+  let img = document.getElementById('add-course-img')?.value || '';
+  const imgUpload = document.getElementById('add-course-img-upload');
   const rating = document.getElementById('add-course-rating')?.value || '4.8';
 
   if (!name) return showToast('Course name is required', 'error');
+
+  // Handle image upload reading if a file is selected
+  if (imgUpload && imgUpload.files && imgUpload.files[0]) {
+    try {
+      const file = imgUpload.files[0];
+      if (file.size > 2 * 1024 * 1024) {
+        return showToast('Image file is too large. Max 2MB allowed.', 'error');
+      }
+      const base64Str = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
+      });
+      img = base64Str;
+    } catch (e) {
+      console.error('Error reading image file:', e);
+      return showToast('Failed to read image file', 'error');
+    }
+  }
 
   let finalStatus = status;
   // Ensure new courses are approved by default
@@ -1096,6 +1123,22 @@ window.saveCourseFinal = async () => {
       showToast(`Failed to create course: ${err.message}`, 'error');
     }
   }
+};
+
+window.revokeCourseAccess = async (enrollmentId) => {
+  confirmAction('Are you sure you want to revoke this student\'s access to the course files? They will no longer be able to open the classroom.', async () => {
+    try {
+      showToast('Revoking access...', 'info');
+      const res = await apiRequest(`/enrollments/${enrollmentId}/revoke`, { method: 'POST' });
+      showToast(res.message || 'Access revoked', 'success');
+      const filter = document.getElementById("course-students-filter");
+      if (filter && filter.value) {
+        await loadCourseStudentsTable(filter.value);
+      }
+    } catch (err) {
+      showToast(err.message, 'error');
+    }
+  }, 'Revoke Access');
 };
 
 window.deleteCourse = async (id) => {

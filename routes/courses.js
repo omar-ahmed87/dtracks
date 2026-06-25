@@ -85,6 +85,10 @@ router.get('/all', async (req, res, next) => {
       description: c.description,
       link: c.link,
       status: 'approved',
+      img: c.img || null,
+      tagStr: c.tagStr || null,
+      weeks: c.weeks || null,
+      rating: c.rating || null,
     }));
     res.json({ courses: mapped });
   } catch (err) {

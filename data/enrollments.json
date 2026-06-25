@@ -32,7 +32,7 @@
   {
     "user_id": "ddca0ac1-6e68-4c4b-80c3-844cbe4286e8",
     "course_id": 2,
-    "status": "active",
+    "status": "rejected",
     "progress": {
       "completedLessons": [],
       "quizCompleted": false,

@@ -374,13 +374,14 @@ function initLmsNavigation() {
       "display:none",
       "position:fixed",
       "top:0",
-      "left:280px",
+      "left:0",  // Changed from left:280px to cover the whole screen
       "right:0",
       "bottom:0",
-      "background:rgba(0,0,0,0.45)",
+      "background:rgba(0,0,0,0.3)",  // Lighter background
       "z-index:250",
       "opacity:0",
-      "transition:opacity 0.3s ease",
+      "transition:opacity 0.25s ease",  // Slightly faster transition
+      "pointer-events:auto"  // Ensure it can capture clicks
     ].join(";");
     document.body.appendChild(overlay);
   }
@@ -388,7 +389,11 @@ function initLmsNavigation() {
   function openMobileSidebar() {
     if (!drawer) return;
     overlay.style.display = "block";
-    requestAnimationFrame(() => { overlay.style.opacity = "1"; });
+    requestAnimationFrame(() => { 
+      requestAnimationFrame(() => { 
+        overlay.style.opacity = "1"; 
+      }); 
+    });
     drawer.style.left = "0";
     drawer.classList.add("open");
     document.body.style.overflow = "hidden";
@@ -399,7 +404,7 @@ function initLmsNavigation() {
     drawer.classList.remove("open");
     drawer.style.left = "-280px";
     overlay.style.opacity = "0";
-    setTimeout(() => { overlay.style.display = "none"; }, 300);
+    setTimeout(() => { overlay.style.display = "none"; }, 250);
     document.body.style.overflow = "";
   }
 

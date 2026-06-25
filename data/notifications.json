@@ -3,6 +3,25 @@
     "user_id": "ddca0ac1-6e68-4c4b-80c3-844cbe4286e8",
     "course_id": 2,
     "title": "dfgfdg",
+    "body": "hi",
+    "sender_id": "8b8fac41-6027-468a-b1a3-48b72b1d1779",
+    "id": "7ba3bb05-a8d4-4341-9697-732ea7f817e3",
+    "created_at": "2026-06-24T14:33:16.243Z"
+  },
+  {
+    "user_id": "9e334157-b92d-41a0-b465-69d92416c1de",
+    "course_id": 2,
+    "title": "dfgfdg",
+    "body": "hi",
+    "sender_id": "8b8fac41-6027-468a-b1a3-48b72b1d1779",
+    "id": "73d17d5d-70cf-46e2-b4d2-723b45c7b281",
+    "created_at": "2026-06-24T14:33:16.137Z",
+    "read_at": "2026-06-24T14:39:49.964Z"
+  },
+  {
+    "user_id": "ddca0ac1-6e68-4c4b-80c3-844cbe4286e8",
+    "course_id": 2,
+    "title": "dfgfdg",
     "body": "gfdgfdgfdg",
     "sender_id": "b5c986b0-b15b-46b7-ac64-17c867614fd5",
     "id": "e081c698-4896-4036-af14-98fed2e67cb6",
