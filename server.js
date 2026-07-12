@@ -91,7 +91,7 @@ app.get("/health", (req, res) => {
 app.set("view engine", "ejs");
 app.use(expressLayouts);
 app.set("layout", "layout");
-app.set("views", path.join(process.cwd(), "templates"));
+app.set("views", path.join(__dirname, "templates"));
 
 // Trust proxy
 app.set("trust proxy", 1);
@@ -212,11 +212,11 @@ app.use(
 
 // Serve static files BEFORE rate limiting so assets don't exhaust the limit
 app.use(
-  express.static(path.join(process.cwd(), "frontend"), { dotfiles: "deny" }),
+  express.static(path.join(__dirname, "frontend"), { dotfiles: "deny" }),
 );
 app.use(
   "/static",
-  express.static(path.join(process.cwd(), "public"), { dotfiles: "deny" }),
+  express.static(path.join(__dirname, "public"), { dotfiles: "deny" }),
 );
 
 const limiter = rateLimit({
