@@ -24,7 +24,7 @@
   ],
   "functions": {
     "api/index.js": {
-      "includeFiles": "templates/**,frontend/**,public/**"
+      "includeFiles": "templates/**,frontend/**,public/**,routes/**,lib/**,*.js"
     }
   }
 }
