@@ -77,6 +77,19 @@ const PORT = process.env.PORT || 10000;
 console.log(`✓ Using PORT: ${PORT}`);
 console.log(`✓ NODE_ENV: ${process.env.NODE_ENV || "development"}`);
 
+// Fix for Cloudflare Workers where req.body is a read-only property on native Request
+app.use((req, res, next) => {
+  if (req.body === undefined) {
+    Object.defineProperty(req, 'body', {
+      value: undefined,
+      writable: true,
+      configurable: true,
+      enumerable: true,
+    });
+  }
+  next();
+});
+
 // Fix for Vercel routing where req.url becomes the rewrite destination
 app.use((req, res, next) => {
   if (req.url === '/api/index.js' || req.url === '/api/index' || req.url === '/api') {
