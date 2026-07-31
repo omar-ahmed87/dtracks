@@ -104,7 +104,7 @@ app.get("/health", (req, res) => {
 app.set("view engine", "ejs");
 app.use(expressLayouts);
 app.set("layout", "layout");
-app.set("views", path.join(__dirname, "templates"));
+app.set("views", path.join(typeof __dirname !== 'undefined' ? __dirname : '', "templates"));
 
 // Cloudflare Workers EJS Override
 if (process.env.CLOUDFLARE_WORKER) {
@@ -273,11 +273,11 @@ app.use(
 
 // Serve static files BEFORE rate limiting so assets don't exhaust the limit
 app.use(
-  express.static(path.join(__dirname, "frontend"), { dotfiles: "deny" }),
+  express.static(path.join(typeof __dirname !== 'undefined' ? __dirname : '', "frontend"), { dotfiles: "deny" }),
 );
 app.use(
   "/static",
-  express.static(path.join(__dirname, "public"), { dotfiles: "deny" }),
+  express.static(path.join(typeof __dirname !== 'undefined' ? __dirname : '', "public"), { dotfiles: "deny" }),
 );
 
 const limiter = rateLimit({
