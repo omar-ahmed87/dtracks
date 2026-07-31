@@ -17,7 +17,7 @@ const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const csrf = require("csurf");
 const xss = require("xss");
-const ejs = process.env.CLOUDFLARE_WORKER ? null : require("ejs");
+
 const expressLayouts = require("express-ejs-layouts");
 const path = require("path");
 
