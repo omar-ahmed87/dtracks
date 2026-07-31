@@ -369,8 +369,10 @@ app.use((err, req, res, next) => {
 });
 
 // Start server (Railway, Render, local, etc.)
-// Skip only for serverless platforms (Vercel, Netlify, Cloudflare Workers)
-if (!process.env.NETLIFY && !process.env.VERCEL && !process.env.CLOUDFLARE_WORKER) {
+// Detect Cloudflare Workers natively since process.env might not be defined globally
+const isCloudflareWorker = (typeof navigator !== 'undefined' && navigator.userAgent === 'Cloudflare-Workers') || process.env.CLOUDFLARE_WORKER;
+
+if (!process.env.NETLIFY && !process.env.VERCEL && !isCloudflareWorker) {
   // Always bind to 0.0.0.0 for cloud deployments (Railway, Render, etc.)
   const host = "0.0.0.0";
 
