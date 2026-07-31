@@ -15,7 +15,8 @@
     "start": "node server.js",
     "dev": "nodemon server.js",
     "backup": "node backup.js",
-    "backup-restore": "node backup.js --restore"
+    "backup-restore": "node backup.js --restore",
+    "build:cf": "node build-ejs.js"
   },
   "devDependencies": {
     "nodemon": "^3.1.14"

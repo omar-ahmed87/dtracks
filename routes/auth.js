@@ -302,11 +302,9 @@ router.post("/register", validateUserPayload, async (req, res, next) => {
     const { email, username, password } = req.safePayload;
     const phone = normalizePhone(req.body?.phone);
     if (!phone) {
-      return res
-        .status(400)
-        .json({
-          error: "Please enter a valid phone number (at least 8 digits).",
-        });
+      return res.status(400).json({
+        error: "Please enter a valid phone number (at least 8 digits).",
+      });
     }
 
     const result = await registerUser(email, username, password, "user", req, {
@@ -333,88 +331,97 @@ router.post("/register", validateUserPayload, async (req, res, next) => {
 });
 
 /** Course registration form only — does not fail if email already exists */
-router.post(
-  "/enroll-course",
-  authenticateJWT,
-  async (req, res, next) => {
-    try {
-      const phoneRaw = String(req.body?.phone || "").trim();
-      const courseId = req.body?.courseId || req.body?.course;
-      const education_status = req.body?.education_status;
-      const college = req.body?.college;
-      const department = req.body?.department;
-      const level = req.body?.level;
-      const experience = req.body?.experience;
-      const age = req.body?.age;
-      const gender = req.body?.gender;
+router.post("/enroll-course", authenticateJWT, async (req, res, next) => {
+  try {
+    const phoneRaw = String(req.body?.phone || "").trim();
+    const courseId = req.body?.courseId || req.body?.course;
+    const education_status = req.body?.education_status;
+    const college = req.body?.college;
+    const department = req.body?.department;
+    const level = req.body?.level;
+    const experience = req.body?.experience;
+    const age = req.body?.age;
+    const gender = req.body?.gender;
 
-      if (!phoneRaw) return res.status(400).json({ error: "Phone is required" });
-      if (!courseId) return res.status(400).json({ error: "Please select a course" });
-      if (!education_status || !college || !department || !level || !experience || !age || !gender) {
-        return res.status(400).json({ error: "All required fields must be filled" });
-      }
-
-      let forceUserId = null;
-      if (req.user?.sub) {
-        try {
-          const sessionUser = await studentStore.resolveUserFromToken(req.user);
-          if (sessionUser) forceUserId = sessionUser.id;
-        } catch {
-          /* continue without session link */
-        }
-      }
-
-      if (!forceUserId) {
-        return res.status(401).json({ error: "Session expired. Please sign in again." });
-      }
-
-      const result = await studentStore.submitCourseEnrollment({
-        phone: phoneRaw,
-        courseId,
-        req,
-        forceUserId,
-        extraInfo: {
-          education_status,
-          college,
-          department,
-          level,
-          experience,
-          age,
-          gender
-        }
-      });
-
-      if (result.error) {
-        return res.status(400).json({ error: result.error });
-      }
-
-      const token = await generateToken(result.user);
-      res.cookie(COOKIE_NAME, token, authCookieOptions);
-
-      if (result.alreadyActive) {
-        return res.json({
-          success: true,
-          alreadyActive: true,
-          message: result.message,
-          courseId,
-          redirect: `/classroom?course=${courseId}`,
-        });
-      }
-
-      res.status(201).json({
-        success: true,
-        message:
-          result.message ||
-          "Registration submitted. You will get access after admin approval.",
-        existingAccount: result.existingAccount,
-        courseId,
-        redirect: `/classroom?course=${courseId}&enrolled=1`,
-      });
-    } catch (err) {
-      next(err);
+    if (!phoneRaw) return res.status(400).json({ error: "Phone is required" });
+    if (!courseId)
+      return res.status(400).json({ error: "Please select a course" });
+    if (
+      !education_status ||
+      !college ||
+      !department ||
+      !level ||
+      !experience ||
+      !age ||
+      !gender
+    ) {
+      return res
+        .status(400)
+        .json({ error: "All required fields must be filled" });
     }
-  },
-);
+
+    let forceUserId = null;
+    if (req.user?.sub) {
+      try {
+        const sessionUser = await studentStore.resolveUserFromToken(req.user);
+        if (sessionUser) forceUserId = sessionUser.id;
+      } catch {
+        /* continue without session link */
+      }
+    }
+
+    if (!forceUserId) {
+      return res
+        .status(401)
+        .json({ error: "Session expired. Please sign in again." });
+    }
+
+    const result = await studentStore.submitCourseEnrollment({
+      phone: phoneRaw,
+      courseId,
+      req,
+      forceUserId,
+      extraInfo: {
+        education_status,
+        college,
+        department,
+        level,
+        experience,
+        age,
+        gender,
+      },
+    });
+
+    if (result.error) {
+      return res.status(400).json({ error: result.error });
+    }
+
+    const token = await generateToken(result.user);
+    res.cookie(COOKIE_NAME, token, authCookieOptions);
+
+    if (result.alreadyActive) {
+      return res.json({
+        success: true,
+        alreadyActive: true,
+        message: result.message,
+        courseId,
+        redirect: `/classroom?course=${courseId}`,
+      });
+    }
+
+    res.status(201).json({
+      success: true,
+      message:
+        result.message ||
+        "Registration submitted. You will get access after admin approval.",
+      existingAccount: result.existingAccount,
+      courseId,
+      redirect: `/classroom?course=${courseId}&enrolled=1`,
+    });
+  } catch (err) {
+    next(err);
+  }
+});
 
 router.post("/login", validateUserPayload, async (req, res, next) => {
   try {
@@ -475,20 +482,16 @@ router.post("/forgot-password", async (req, res, next) => {
       contact = email;
     } else {
       if (!phone) {
-        return res
-          .status(400)
-          .json({
-            error: "Please enter a valid phone number (at least 8 digits).",
-          });
+        return res.status(400).json({
+          error: "Please enter a valid phone number (at least 8 digits).",
+        });
       }
       user = await studentStore.findUserByPhone(phone);
       if (!user) {
-        return res
-          .status(404)
-          .json({
-            error:
-              "No account found with this phone number. Use the same number from sign up or course registration.",
-          });
+        return res.status(404).json({
+          error:
+            "No account found with this phone number. Use the same number from sign up or course registration.",
+        });
       }
       contact = phone;
     }

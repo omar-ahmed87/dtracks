@@ -44,12 +44,7 @@
   <% } %>
 </head>
 <body data-auth="<%= typeof isLoggedIn !== 'undefined' ? isLoggedIn : false %>">
-  <div class="global-bg-decorations">
-    <div class="decor-blob decor-1"></div>
-    <div class="decor-blob decor-2"></div>
-    <div class="decor-half-circle"></div>
-    <div class="decor-dots"></div>
-  </div>
+
 
 <% if (!(typeof hideHeaderFooter !== 'undefined' && hideHeaderFooter)) { %>
 <%- include('partials/header', { isLoggedIn: typeof isLoggedIn !== 'undefined' ? isLoggedIn : false, userRole: typeof userRole !== 'undefined' ? userRole : '', navCourses: typeof navCourses !== 'undefined' ? navCourses : [] }) %>

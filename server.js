@@ -77,6 +77,19 @@ const PORT = process.env.PORT || 10000;
 console.log(`✓ Using PORT: ${PORT}`);
 console.log(`✓ NODE_ENV: ${process.env.NODE_ENV || "development"}`);
 
+// Fix for Vercel routing where req.url becomes the rewrite destination
+app.use((req, res, next) => {
+  if (req.url === '/api/index.js' || req.url === '/api/index' || req.url === '/api') {
+    req.url = '/';
+    req.path = '/';
+  } else if (req.url.startsWith('/api/index.js/')) {
+    req.url = req.url.replace('/api/index.js', '');
+  } else if (req.url.startsWith('/api/index/')) {
+    req.url = req.url.replace('/api/index', '');
+  }
+  next();
+});
+
 // Health check endpoint FIRST - before any middleware
 app.get("/health", (req, res) => {
   res.status(200).json({
@@ -92,6 +105,44 @@ app.set("view engine", "ejs");
 app.use(expressLayouts);
 app.set("layout", "layout");
 app.set("views", path.join(__dirname, "templates"));
+
+// Cloudflare Workers EJS Override
+if (process.env.CLOUDFLARE_WORKER) {
+  console.log("✓ Running in Cloudflare Worker mode: Using precompiled EJS templates");
+  const compiledTemplates = require("./compiled-templates");
+  
+  app.render = function (name, options, callback) {
+    if (typeof options === 'function') {
+        callback = options;
+        options = {};
+    }
+    options = options || {};
+    
+    let tplName = name.replace(/\\/g, '/');
+    if (tplName.endsWith('.ejs')) tplName = tplName.replace('.ejs', '');
+    const viewsDir = app.get('views').replace(/\\/g, '/');
+    if (tplName.startsWith(viewsDir)) {
+        tplName = tplName.slice(viewsDir.length + 1);
+    }
+    
+    const fn = compiledTemplates[tplName];
+    if (!fn) return callback(new Error('Template not found in precompiled templates: ' + tplName));
+    
+    const include = function(includePath, includeData) {
+        let resolvedPath = includePath.replace(/\\/g, '/').replace('.ejs', '');
+        const childFn = compiledTemplates[resolvedPath];
+        if (!childFn) throw new Error('Include not found in precompiled templates: ' + resolvedPath);
+        return childFn(Object.assign({}, options, includeData), ejs.escapeXML, include, null);
+    };
+
+    try {
+        const html = fn(options, ejs.escapeXML, include, null);
+        callback(null, html);
+    } catch (err) {
+        callback(err);
+    }
+  };
+}
 
 // Trust proxy
 app.set("trust proxy", 1);
@@ -292,8 +343,8 @@ app.use((err, req, res, next) => {
 });
 
 // Start server (Railway, Render, local, etc.)
-// Skip only for serverless platforms (Vercel, Netlify)
-if (!process.env.NETLIFY && !process.env.VERCEL) {
+// Skip only for serverless platforms (Vercel, Netlify, Cloudflare Workers)
+if (!process.env.NETLIFY && !process.env.VERCEL && !process.env.CLOUDFLARE_WORKER) {
   // Always bind to 0.0.0.0 for cloud deployments (Railway, Render, etc.)
   const host = "0.0.0.0";
 
