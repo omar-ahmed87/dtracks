@@ -79,13 +79,16 @@ console.log(`✓ NODE_ENV: ${process.env.NODE_ENV || "development"}`);
 
 // Fix for Cloudflare Workers where req.body is a read-only property on native Request
 app.use((req, res, next) => {
-  if (req.body === undefined) {
+  try {
+    const existingBody = req.body;
     Object.defineProperty(req, 'body', {
-      value: undefined,
+      value: existingBody || {},
       writable: true,
       configurable: true,
-      enumerable: true,
+      enumerable: true
     });
+  } catch (e) {
+    // ignore
   }
   next();
 });
