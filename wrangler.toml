@@ -5,7 +5,8 @@ compatibility_flags = ["nodejs_compat"]
 
 # Serve the frontend directory automatically as static assets
 # Any requests to CSS, JS, or images in this directory will be handled by Cloudflare natively
-assets = "./frontend"
+[assets]
+directory = "./frontend"
 
 [vars]
 # This tells server.js to use precompiled EJS templates and skip app.listen()
