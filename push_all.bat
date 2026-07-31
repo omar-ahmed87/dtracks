@@ -21,8 +21,8 @@ git push https://github.com/amr2018/etracks.git HEAD:main
 echo Pushing to omar-ahmed87/etracks...
 git push https://github.com/omar-ahmed87/etracks.git HEAD:main
 
-echo Pushing to omar-ahmed87/dtracks...
-git push https://github.com/omar-ahmed87/dtracks.git HEAD:main
+echo Pushing to omar-ahmed87/dtracks (with force)...
+git push -f https://github.com/omar-ahmed87/dtracks.git HEAD:main
 
 echo.
 echo ===================================================
