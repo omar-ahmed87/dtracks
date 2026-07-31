@@ -17,7 +17,7 @@ const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const csrf = require("csurf");
 const xss = require("xss");
-const ejs = require("ejs");
+const ejs = process.env.CLOUDFLARE_WORKER ? null : require("ejs");
 const expressLayouts = require("express-ejs-layouts");
 const path = require("path");
 
@@ -111,6 +111,16 @@ if (process.env.CLOUDFLARE_WORKER) {
   console.log("✓ Running in Cloudflare Worker mode: Using precompiled EJS templates");
   const compiledTemplates = require("./compiled-templates");
   
+  const customEscapeXML = function(markup) {
+    if (markup == undefined) return '';
+    return String(markup)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/'/g, '&#39;')
+      .replace(/"/g, '&quot;');
+  };
+  
   app.render = function (name, options, callback) {
     if (typeof options === 'function') {
         callback = options;
@@ -132,11 +142,11 @@ if (process.env.CLOUDFLARE_WORKER) {
         let resolvedPath = includePath.replace(/\\/g, '/').replace('.ejs', '');
         const childFn = compiledTemplates[resolvedPath];
         if (!childFn) throw new Error('Include not found in precompiled templates: ' + resolvedPath);
-        return childFn(Object.assign({}, options, includeData), ejs.escapeXML, include, null);
+        return childFn(Object.assign({}, options, includeData), customEscapeXML, include, null);
     };
 
     try {
-        const html = fn(options, ejs.escapeXML, include, null);
+        const html = fn(options, customEscapeXML, include, null);
         callback(null, html);
     } catch (err) {
         callback(err);
